@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/organic-f159171c-bec9-4d14-add8-418f162be2c1/styles.css">
+<script src="_ds/organic-f159171c-bec9-4d14-add8-418f162be2c1/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<title>Formation Deep Learning — Perceptron</title>
+<style>
+deck-stage {
+  --type-display: 118px;
+  --type-title: 68px;
+  --type-subtitle: 40px;
+  --type-body: 34px;
+  --type-small: 28px;
+  --type-kicker: 22px;
+  --pad-x: 128px;
+  --pad-top: 100px;
+  --pad-bottom: 100px;
+  --baseline: 54px;
+  --page-foot-note: " · Formation Deep Learning";
+}
+.slide {
+  display: flex; flex-direction: column;
+  background: var(--color-bg); color: var(--color-text);
+  font-family: var(--font-body);
+  text-wrap: pretty;
+  padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  print-color-adjust: exact; -webkit-print-color-adjust: exact;
+}
+.centered { text-align: center; align-items: center; }
+.centered > .slide-title { margin-left: 0; }
+.slide-title {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: var(--type-title); line-height: calc(1.5 * var(--baseline)); letter-spacing: 0; margin: 0;
+  margin-left: -0.028em;
+  text-box: trim-both cap alphabetic;
+}
+.slide-kicker {
+  font-family: var(--font-body); font-size: var(--type-kicker);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-accent-700);
+  margin: 0 0 calc(1 * var(--baseline) - 1cap);
+}
+.pin-bottom { position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: var(--pad-bottom); }
+.meta { display: flex; align-items: baseline; gap: 18px; font-size: var(--type-kicker); color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+deck-stage { counter-reset: page; }
+.slide { counter-increment: page; }
+.page-foot {
+  position: absolute; right: var(--pad-x); bottom: 34px;
+  font-size: var(--type-kicker); letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  background: var(--color-surface); border-radius: 999px;
+  padding: 8px 18px;
+}
+.page-foot::before { content: counter(page); font-feature-settings: "tnum" 1; }
+.page-foot::after { content: var(--page-foot-note); }
+
+/* Cover */
+.cover { justify-content: center; align-items: center; text-align: center; }
+.cover .rise { display: flex; flex-direction: column; align-items: center; gap: 42px; max-width: 1400px; }
+.cover .meta { justify-content: center; }
+.display {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: var(--type-display); line-height: calc(2.5 * var(--baseline)); letter-spacing: 0; margin: 0;
+}
+.cover-sub { font-size: var(--type-subtitle); line-height: var(--baseline); max-width: 34ch; margin: 0; text-wrap: balance; }
+.eyebrow { font-size: var(--type-kicker); letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--color-accent-700); margin: 0; }
+
+/* Contents */
+.toc { display: flex; flex-direction: column; max-width: 1100px; font-size: var(--type-subtitle); }
+.toc-row { display: flex; align-items: baseline; gap: 42px; }
+.toc-row + .toc-row { margin-top: calc(2 * var(--baseline) - 1cap); }
+.toc-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 62px; height: 62px; border-radius: 999px;
+  background: var(--color-accent-100); color: var(--color-accent-700);
+  font-family: var(--font-heading); font-size: 28px;
+  flex: none;
+  font-feature-settings: "tnum" 1;
+}
+.toc-label { text-box: trim-both cap alphabetic; }
+.toc-dur { margin-left: auto; font-size: var(--type-kicker); color: color-mix(in srgb, var(--color-text) 55%, transparent); font-feature-settings: "tnum" 1; }
+
+/* Section dividers */
+.divider { justify-content: center; background: var(--color-accent-2-800); color: var(--color-bg); overflow: hidden; align-items: center; text-align: center; }
+.divider::before { content: ""; position: absolute; right: -320px; bottom: -420px;
+  width: 1040px; height: 1040px; border-radius: 999px;
+  background: var(--color-accent-2-700); }
+.divider::after { content: ""; position: absolute; left: -260px; top: -260px;
+  width: 620px; height: 620px; border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-2-700) 60%, transparent); }
+.divider .slide-title { margin-left: 0; color: var(--color-bg); }
+.divider .rise { display: flex; flex-direction: column; align-items: center; gap: 24px; position: relative; z-index: 1; }
+.divider .part { font-size: var(--type-kicker); letter-spacing: 0.24em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-bg) 70%, transparent); margin: 0; }
+.divider .agenda { margin-top: 40px; font-size: var(--type-small);
+  color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  max-width: 30ch; text-wrap: balance; line-height: 1.4; }
+.ghost-num {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 260px; line-height: 0.9; letter-spacing: 0;
+  color: var(--color-accent-2-600);
+  margin: 0;
+}
+
+/* Content */
+.content { padding-top: calc(3 * var(--baseline)); }
+.content > .slide-title { margin-top: -1cap; }
+.content > .bullets, .content > .cols, .content > .quad, .content > figure, .content > .toc, .content > .callout, .content > .formula, .content > .table-simple, .content > .steps, .content > .cards { margin-top: calc(3 * var(--baseline) - 1cap); }
+.content > .lead { margin-top: calc(2 * var(--baseline) - 1cap); }
+.lead { font-size: var(--type-subtitle); line-height: calc(1.15 * var(--baseline)); max-width: 30ch; margin: 0;
+  color: color-mix(in srgb, var(--color-text) 78%, transparent); text-wrap: balance; }
+
+.bullets { display: flex; flex-direction: column; max-width: 1300px; margin: 0; padding: 0; list-style: none; font-size: var(--type-body); }
+.bullets li { position: relative; line-height: var(--baseline); text-box: trim-both cap alphabetic; padding-left: 44px;}
+.bullets li + li { margin-top: calc(1.5 * var(--baseline) - 1cap); }
+.bullets li::before { content: ""; position: absolute; left: 0; top: calc(0.5cap - 7px); width: 14px; height: 14px; border-radius: 999px; background: var(--color-accent); }
+.bullets.dashes li { padding-left: 36px; }
+.bullets.dashes li::before { content: ""; width: 20px; height: 3px; border-radius: 2px; background: var(--color-accent-2-600); top: calc(0.5cap - 2px); }
+
+/* Columns */
+.cols { display: grid; gap: calc(1.5 * var(--baseline)) 64px; }
+.cols-2 { grid-template-columns: 1fr 1fr; }
+.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cols p { font-size: var(--type-small); line-height: 1.35; margin: 0; }
+.cols h3 { font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: var(--type-body); margin: 0 0 calc(0.6 * var(--baseline) - 1cap); }
+.cols .num {
+  font-family: var(--font-heading); font-size: 42px; color: var(--color-accent);
+  display: block; margin-bottom: 12px;
+}
+
+/* Cards (rounded surface tiles like the PDF's 3-column concept cards) */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.cards.four { grid-template-columns: repeat(4, 1fr); }
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 44px 40px;
+  display: flex; flex-direction: column; gap: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.card.sage { background: var(--color-accent-2-100); }
+.card.clay { background: var(--color-accent-100); }
+.card .card-num {
+  width: 60px; height: 60px; border-radius: 999px;
+  background: var(--color-accent); color: var(--color-bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-size: 28px;
+}
+.card.sage .card-num { background: var(--color-accent-2-600); }
+.card h3 { font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 32px; margin: 0; }
+.card p { font-size: 24px; line-height: 1.4; margin: 0; color: color-mix(in srgb, var(--color-text) 82%, transparent); }
+
+/* Callout — box for a key insight */
+.callout {
+  background: var(--color-accent-100);
+  border-radius: var(--radius-lg);
+  padding: 44px 56px;
+  font-size: var(--type-subtitle); line-height: 1.3;
+  color: var(--color-accent-800);
+  max-width: 1400px;
+}
+.callout .callout-kicker {
+  font-family: var(--font-body); font-size: var(--type-kicker);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-accent-700);
+  display: block; margin-bottom: 16px;
+}
+
+/* Formula */
+.formula {
+  font-family: 'Cambria Math', 'Latin Modern Math', Georgia, serif;
+  font-size: 54px; line-height: 1.35;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 44px 60px;
+  max-width: 1400px;
+  color: var(--color-text);
+}
+.formula .fnote { font-family: var(--font-body); font-size: 22px; color: color-mix(in srgb, var(--color-text) 55%, transparent); display: block; margin-top: 18px; letter-spacing: 0.02em; }
+.formula em { font-style: italic; color: var(--color-accent-700); }
+
+/* Chart */
+.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text {
+  font-family: var(--font-body); font-size: 22px;
+  fill: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.chart .axis { stroke: var(--color-divider); stroke-width: 1.5; }
+.chart .grid { stroke: var(--color-divider); stroke-width: 1; opacity: 0.5; }
+.chart .curve-a { stroke: var(--color-accent); stroke-width: 5; fill: none; stroke-linecap: round; }
+.chart .curve-b { stroke: var(--color-accent-2-600); stroke-width: 5; fill: none; stroke-linecap: round; }
+.chart-caption { font-size: 24px; line-height: 1.45; max-width: 90ch; margin: calc(1 * var(--baseline)) 0 0; color: color-mix(in srgb, var(--color-text) 65%, transparent); }
+
+/* Simple key-value table (for parameter counts) */
+.table-simple { max-width: 1400px; width: 100%; border-collapse: collapse; font-size: 30px; font-feature-settings: "tnum" 1; }
+.table-simple th, .table-simple td { padding: 22px 24px; text-align: left; border-bottom: 1px solid var(--color-divider); }
+.table-simple th { font-size: var(--type-kicker); letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent); font-weight: 500; }
+.table-simple td:last-child { text-align: right; color: var(--color-accent-700); font-family: var(--font-heading); font-size: 30px; }
+
+/* Steps — numbered horizontal boxes, echoing the PDF's timeline sprint bars */
+.steps { display: grid; grid-template-columns: 1fr; gap: 22px; max-width: 1600px; }
+.step {
+  display: grid; grid-template-columns: 88px 1fr; gap: 32px; align-items: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 22px 32px;
+}
+.step.active { background: var(--color-accent-100); }
+.step-num {
+  width: 68px; height: 68px; border-radius: 999px;
+  background: var(--color-accent-2-600); color: var(--color-bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-size: 30px;
+}
+.step.active .step-num { background: var(--color-accent); }
+.step h4 { font-family: var(--font-heading); font-weight: var(--font-heading-weight); font-size: 28px; margin: 0 0 4px; }
+.step p { font-size: 22px; margin: 0; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.35; }
+
+/* Neuron / MLP diagram helpers */
+.diagram { background: var(--color-surface); border-radius: var(--radius-lg); padding: 40px; }
+.diagram .lbl { fill: var(--color-text); font-size: 24px; font-weight: 500; }
+.diagram .lbl-muted { fill: color-mix(in srgb, var(--color-text) 55%, transparent); font-size: 20px; }
+.diagram .edge { stroke: color-mix(in srgb, var(--color-accent) 55%, transparent); stroke-width: 1.5; fill: none; }
+.diagram .edge-hi { stroke: var(--color-accent); stroke-width: 3; fill: none; }
+.diagram .node { fill: var(--color-bg); stroke: var(--color-accent); stroke-width: 3; }
+.diagram .node-hidden { fill: var(--color-accent-2-100); stroke: var(--color-accent-2-600); stroke-width: 3; }
+.diagram .node-out { fill: var(--color-accent); stroke: var(--color-accent-700); stroke-width: 3; }
+.diagram .box { fill: var(--color-accent-100); stroke: var(--color-accent-700); stroke-width: 2; }
+.diagram .arrow { stroke: var(--color-text); stroke-width: 2.5; fill: none; }
+.diagram .arrow-hi { stroke: var(--color-accent); stroke-width: 3; fill: var(--color-accent); }
+
+/* Two-up: text + diagram */
+.split-two { display: grid; grid-template-columns: 1fr 1.15fr; gap: 72px; align-items: center; margin-top: calc(3 * var(--baseline) - 1cap); }
+.split-two .copy { font-size: 26px; line-height: 1.4; }
+.split-two .copy p { margin: 0 0 20px; }
+.split-two .copy p:last-child { margin-bottom: 0; }
+.split-two h3 { font-family: var(--font-heading); font-size: 34px; margin: 0 0 18px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-deck-active] .rise { animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+}
+
+/* ==================================================================
+   SIGMA CHARTE — token remap + component overrides
+   ================================================================== */
+deck-stage {
+  --font-heading: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-heading-weight: 800;
+
+  --color-bg: #ffffff;
+  --color-text: #5a5c82;
+  --color-surface: #ffffff;
+  --color-divider: #e2e2e1;
+
+  --color-accent: #169dd9;
+  --color-accent-100: #e8f5fc;
+  --color-accent-700: #1580b3;
+  --color-accent-800: #23244d;
+
+  --color-accent-2: #5b4294;
+  --color-accent-2-100: #ece8f6;
+  --color-accent-2-600: #5b4294;
+  --color-accent-2-700: #414495;
+  --color-accent-2-800: #394c9b;
+
+  --radius-lg: 20px;
+  --shadow-sm: 0 6px 22px rgba(35, 36, 77, 0.08);
+  --shadow-md: 0 14px 34px rgba(35, 36, 77, 0.12);
+  --shadow-lg: 0 24px 60px rgba(35, 36, 77, 0.16);
+
+  --grad-pastille: linear-gradient(135deg, #169dd9 0%, #5b4294 100%);
+  --grad-accent: linear-gradient(135deg, #414495 0%, #5b4294 100%);
+}
+
+/* Titles — Poppins 800, tight tracking, dark indigo */
+.slide-title { color: #23244d; letter-spacing: -0.03em; }
+.display { color: #23244d; letter-spacing: -0.035em; }
+.cols h3, .split-two h3, .step h4 { color: #23244d; }
+
+/* Sur-titres — uppercase 600, wide tracking, brand blue, with pastille */
+.slide-kicker, .eyebrow { color: #169dd9; font-weight: 600; }
+.slide-kicker { display: inline-flex; align-items: center; gap: 14px; }
+.slide-kicker::before { content: ""; width: 22px; height: 22px; border-radius: 7px; background: var(--grad-pastille); flex: none; }
+
+/* Bullets — square gradient pastilles */
+.bullets li::before { width: 16px; height: 16px; border-radius: 5px; background: var(--grad-pastille); top: calc(0.5cap - 8px); }
+.bullets.dashes li::before { width: 22px; height: 4px; border-radius: 2px; background: var(--color-accent-2); }
+
+/* TOC numbers — gradient rounded-square pastilles */
+.toc-num { background: var(--grad-pastille); color: #fff; border-radius: 16px; }
+
+/* Cards — white, 1px border, rounded, soft shadow */
+.card { border: 1px solid var(--color-divider); box-shadow: var(--shadow-sm); }
+.card .card-num { background: var(--grad-pastille); color: #fff; border-radius: 16px; }
+.card h3 { color: #23244d; }
+.card.sage { background: var(--color-accent-2-100); border-color: transparent; }
+.card.sage .card-num { background: var(--color-accent-2); }
+.card.clay { background: var(--grad-accent); border-color: transparent; box-shadow: 0 14px 34px rgba(65, 68, 149, 0.28); }
+.card.clay h3 { color: #fff; }
+.card.clay p { color: rgba(255, 255, 255, 0.86); }
+.card.clay .card-num { background: rgba(255, 255, 255, 0.18); color: #fff; }
+
+/* Callout — light blue tint, indigo text */
+.callout { color: #23244d; border: 1px solid var(--color-divider); }
+.callout .callout-kicker { color: #169dd9; font-weight: 600; }
+
+/* Surfaces get the card border language */
+.formula, .diagram, .step { border: 1px solid var(--color-divider); }
+.step.active { border-color: transparent; }
+.step-num { border-radius: 16px; }
+.step.active .step-num { background: var(--grad-pastille); }
+
+/* Section dividers — purple gradient + blue halo + square-block motif */
+.divider { background: var(--grad-accent); }
+.divider::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(680px 680px at 82% 18%, rgba(22, 157, 217, 0.40), transparent 66%);
+}
+.divider::after {
+  content: ""; position: absolute; top: 96px; right: 150px;
+  width: 34px; height: 34px; border-radius: 7px;
+  background: rgba(127, 208, 242, 0.95);
+  box-shadow:
+     -58px    0 rgba(127, 208, 242, 0.45),
+    -116px    0 rgba(127, 208, 242, 0.22),
+       0px  58px rgba(127, 208, 242, 0.85),
+     -58px  58px rgba(127, 208, 242, 0.60),
+    -116px  58px rgba(127, 208, 242, 0.32),
+       0px 116px rgba(127, 208, 242, 0.40),
+     -58px 116px rgba(127, 208, 242, 0.28);
+}
+.divider .ghost-num { color: rgba(255, 255, 255, 0.13); }
+
+/* Cover — subtle brand halo + square motif on white */
+.cover::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(760px 760px at 84% 16%, rgba(22, 157, 217, 0.12), transparent 62%);
+}
+.cover::after {
+  content: ""; position: absolute; top: 120px; right: 160px; pointer-events: none;
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--grad-pastille); opacity: 0.9;
+  box-shadow:
+     -52px    0 rgba(91, 66, 148, 0.30),
+       0px  52px rgba(22, 157, 217, 0.30),
+     -52px  52px rgba(91, 66, 148, 0.18);
+}
+.cover .rise { position: relative; z-index: 1; }
+.cover .meta { z-index: 1; }
+
+/* Page-foot pill */
+.page-foot { background: #ffffff; border: 1px solid var(--color-divider); color: #a6a8bf; }
+</style>
+</helmet>
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%" data-uneditable="">
+
+<!-- 1 · COVER -->
+<section class="slide cover" data-label="Couverture" data-speaker-notes="Bienvenue. Aujourd'hui : une journée pour comprendre le deep learning depuis les fondations. Le matin — théorie du perceptron et du MLP. L'après-midi — travaux pratiques.">
+  <div class="rise">
+    <p class="eyebrow">Formation · 1 journée</p>
+    <h1 class="display">Introduction au<br>Deep Learning</h1>
+    <p class="cover-sub text-muted">Du perceptron au réseau multi-couches — comprendre comment une machine apprend.</p>
+  </div>
+  <div class="pin-bottom meta"><span>Session matinée</span><span>·</span><span>Théorie</span><span>·</span><span>~ 3 h</span></div>
+</section>
+
+<!-- 2 · SOMMAIRE -->
+<section class="slide content" data-label="Sommaire" data-speaker-notes="Voici notre parcours de la journée. Sept étapes qui montent progressivement : on part du neurone isolé, on assemble un perceptron, on constate ses limites, on empile en réseau, on comprend l'apprentissage.">
+  <p class="slide-kicker">Sommaire</p>
+  <h2 class="slide-title">Le parcours de la matinée</h2>
+  <div class="toc rise">
+    <div class="toc-row"><span class="toc-num">1</span><span class="toc-label">Introduction au Deep Learning</span><span class="toc-dur">20 min</span></div>
+    <div class="toc-row"><span class="toc-num">2</span><span class="toc-label">Le neurone artificiel</span><span class="toc-dur">30 min</span></div>
+    <div class="toc-row"><span class="toc-num">3</span><span class="toc-label">Le perceptron</span><span class="toc-dur">30 min</span></div>
+    <div class="toc-row"><span class="toc-num">4</span><span class="toc-label">Les limites du perceptron</span><span class="toc-dur">20 min</span></div>
+    <div class="toc-row"><span class="toc-num">5</span><span class="toc-label">Du perceptron au MLP</span><span class="toc-dur">30 min</span></div>
+    <div class="toc-row"><span class="toc-num">6</span><span class="toc-label">Comment un réseau apprend</span><span class="toc-dur">40 min</span></div>
+    <div class="toc-row"><span class="toc-num">7</span><span class="toc-label">Synthèse et transition vers le TP</span><span class="toc-dur">10 min</span></div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 1 — INTRODUCTION AU DEEP LEARNING
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 1 — Introduction" data-speaker-notes="Première partie : situons le deep learning dans le paysage plus large de l'IA et voyons pourquoi cette approche a émergé.">
+  <div class="rise">
+    <p class="part">Partie 1 · 20 min</p>
+    <p class="ghost-num">01</p>
+    <h2 class="slide-title">Introduction au<br>Deep Learning</h2>
+    <p class="agenda">IA, ML, DL · Pourquoi le DL · Apprendre depuis les données · Applications</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="IA / ML / DL" data-speaker-notes="Trois termes souvent confondus. L'IA est l'ambition globale ; le ML est une façon d'y parvenir en apprenant depuis les données ; le DL est une famille de méthodes du ML fondée sur les réseaux de neurones profonds.">
+  <p class="slide-kicker">1.1 · Définitions</p>
+  <h2 class="slide-title">IA, Machine Learning, Deep Learning</h2>
+  <div class="cards rise">
+    <div class="card">
+      <span class="card-num">IA</span>
+      <h3>Intelligence Artificielle</h3>
+      <p>Toute technique qui permet à une machine d'imiter une capacité humaine : raisonner, percevoir, décider, dialoguer.</p>
+    </div>
+    <div class="card sage">
+      <span class="card-num">ML</span>
+      <h3>Machine Learning</h3>
+      <p>Sous-ensemble de l'IA : au lieu de coder des règles, on montre des exemples et l'algorithme en déduit un modèle.</p>
+    </div>
+    <div class="card clay">
+      <span class="card-num">DL</span>
+      <h3>Deep Learning</h3>
+      <p>Famille du ML où le modèle est un réseau de neurones à plusieurs couches. Extrait automatiquement les caractéristiques.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Emboîtement IA/ML/DL" data-speaker-notes="Visuellement, ces trois cercles s'emboîtent : DL ⊂ ML ⊂ IA. Ce ne sont pas des rivaux — ce sont des zooms successifs.">
+  <p class="slide-kicker">1.1 · Emboîtement</p>
+  <h2 class="slide-title">Trois cercles concentriques</h2>
+  <figure class="rise" style="display:flex; justify-content:center; margin-top: calc(2 * var(--baseline));">
+    <svg viewBox="0 0 1200 620" style="width: 100%; max-width: 1400px; height: auto;" role="img" aria-label="Trois cercles concentriques emboîtés — IA contient ML qui contient DL">
+      <circle cx="600" cy="310" r="290" fill="var(--color-accent-100)" stroke="var(--color-accent-700)" stroke-width="2.5"></circle>
+      <circle cx="640" cy="330" r="200" fill="var(--color-accent-2-100)" stroke="var(--color-accent-2-700)" stroke-width="2.5"></circle>
+      <circle cx="680" cy="350" r="115" fill="var(--color-accent)" stroke="var(--color-accent-700)" stroke-width="2.5"></circle>
+      <text x="360" y="130" font-family="var(--font-heading)" font-size="42" fill="var(--color-accent-700)">Intelligence Artificielle</text>
+      <text x="360" y="160" font-size="22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">systèmes experts, recherche, planification…</text>
+      <text x="440" y="230" font-family="var(--font-heading)" font-size="36" fill="var(--color-accent-2-800)">Machine Learning</text>
+      <text x="440" y="258" font-size="22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">arbres, SVM, forêts aléatoires…</text>
+      <text x="680" y="358" text-anchor="middle" font-family="var(--font-heading)" font-size="34" fill="var(--color-bg)">Deep Learning</text>
+    </svg>
+  </figure>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Pourquoi le DL" data-speaker-notes="Trois vents porteurs se sont conjugués dans les années 2010 : masses de données, GPU, algorithmes matures. C'est la conjonction qui a fait décoller le DL.">
+  <p class="slide-kicker">1.2 · Contexte</p>
+  <h2 class="slide-title">Pourquoi le Deep Learning ?</h2>
+  <div class="cards rise">
+    <div class="card">
+      <span class="card-num">1</span>
+      <h3>Données massives à disposition grâce à internet</h3>
+      <p>Grâce à Internet, aux smartphones, et aux capteurs, les datasets se comptent en millions d'exemples. Les modèles profonds en ont besoin pour bien généraliser.</p>
+    </div>
+    <div class="card sage">
+      <span class="card-num">2</span>
+      <h3>Puissance de calcul: Des machines plus puissantes d'année en année</h3>
+      <p>Les GPU (puis TPU) rendent l'entraînement de grands réseaux réalisable en heures plutôt qu'en mois.</p>
+    </div>
+    <div class="card clay">
+      <span class="card-num">3</span>
+      <h3>Nouveaux algorithmes</h3>
+      <p>Backpropagation, fonctions d'activation modernes, régularisation — la boîte à outils s'est stabilisée.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Apprentissage depuis les données" data-speaker-notes="Idée-clé : on ne programme plus la solution. On donne des exemples annotés, et le modèle ajuste ses paramètres pour reproduire — puis généraliser.">
+  <p class="slide-kicker">1.3 · Le paradigme</p>
+  <h2 class="slide-title">Apprendre à partir des données</h2>
+  <figure class="rise" style="margin-top: calc(2 * var(--baseline));">
+    <svg viewBox="0 0 1600 480" style="width:100%; height:auto;" role="img" aria-label="Deux paradigmes : programmation classique versus apprentissage machine">
+      <!-- Classique -->
+      <text x="0" y="40" font-family="var(--font-heading)" font-size="30" fill="var(--color-text)">Programmation classique</text>
+      <g transform="translate(0, 70)">
+        <rect x="0" y="20" width="220" height="90" rx="20" fill="var(--color-surface)" stroke="var(--color-divider)" stroke-width="2"></rect>
+        <text x="110" y="72" text-anchor="middle" font-size="24" fill="var(--color-text)">Règles</text>
+        <rect x="290" y="20" width="220" height="90" rx="20" fill="var(--color-surface)" stroke="var(--color-divider)" stroke-width="2"></rect>
+        <text x="400" y="72" text-anchor="middle" font-size="24" fill="var(--color-text)">Données</text>
+        <path d="M235 65 L285 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+        <rect x="580" y="20" width="260" height="90" rx="20" fill="var(--color-accent-2-100)" stroke="var(--color-accent-2-700)" stroke-width="2"></rect>
+        <text x="710" y="72" text-anchor="middle" font-size="24" fill="var(--color-accent-2-800)">Programme</text>
+        <path d="M515 65 L575 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+        <rect x="910" y="20" width="260" height="90" rx="20" fill="var(--color-surface)" stroke="var(--color-divider)" stroke-width="2"></rect>
+        <text x="1040" y="72" text-anchor="middle" font-size="24" fill="var(--color-text)">Réponses</text>
+        <path d="M845 65 L905 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+      </g>
+      <!-- ML -->
+      <text x="0" y="270" font-family="var(--font-heading)" font-size="30" fill="var(--color-accent-700)">Machine Learning</text>
+      <g transform="translate(0, 300)">
+        <rect x="0" y="20" width="220" height="90" rx="20" fill="var(--color-surface)" stroke="var(--color-divider)" stroke-width="2"></rect>
+        <text x="110" y="72" text-anchor="middle" font-size="24" fill="var(--color-text)">Données</text>
+        <rect x="290" y="20" width="220" height="90" rx="20" fill="var(--color-surface)" stroke="var(--color-divider)" stroke-width="2"></rect>
+        <text x="400" y="72" text-anchor="middle" font-size="24" fill="var(--color-text)">Réponses</text>
+        <path d="M235 65 L285 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+        <rect x="580" y="20" width="260" height="90" rx="20" fill="var(--color-accent)" stroke="var(--color-accent-700)" stroke-width="2"></rect>
+        <text x="710" y="72" text-anchor="middle" font-size="24" fill="var(--color-bg)">Modèle</text>
+        <path d="M515 65 L575 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+        <rect x="910" y="20" width="260" height="90" rx="20" fill="var(--color-accent-2-100)" stroke="var(--color-accent-2-700)" stroke-width="2"></rect>
+        <text x="1040" y="72" text-anchor="middle" font-size="24" fill="var(--color-accent-2-800)">Règles</text>
+        <path d="M845 65 L905 65" stroke="var(--color-text)" stroke-width="2" fill="none" marker-end="url(#arrow1)"></path>
+      </g>
+      <defs>
+        <marker id="arrow1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--color-text)"></path>
+        </marker>
+      </defs>
+    </svg>
+  </figure>
+  <p class="chart-caption">D'après Chollet — au lieu d'écrire les règles à la main, on les fait émerger d'exemples annotés.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Applications" data-speaker-notes="Le DL est partout. Vision, langage, audio, science, jeux. Objectif ici : reconnaître ces domaines et voir qu'ils partagent la même mécanique — apprendre depuis des données.">
+  <p class="slide-kicker">1.4 · Panorama</p>
+  <h2 class="slide-title">Où trouve-t-on du Deep Learning ?</h2>
+  <div class="cards four rise" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="card">
+      <h3>Vision</h3>
+      <p>Reconnaissance d'objets, imagerie médicale, voitures autonomes, contrôle qualité.</p>
+    </div>
+    <div class="card sage">
+      <h3>Langage</h3>
+      <p>Traduction, assistants conversationnels, résumé automatique, recherche sémantique.</p>
+    </div>
+    <div class="card">
+      <h3>Audio</h3>
+      <p>Reconnaissance vocale, synthèse, séparation de sources, détection d'anomalies.</p>
+    </div>
+    <div class="card clay">
+      <h3>Sciences</h3>
+      <p>Repliement des protéines, prévision météo, découverte de matériaux, physique des particules.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 2 — LE NEURONE ARTIFICIEL
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 2 — Le neurone" data-speaker-notes="Deuxième partie : la brique élémentaire. Un neurone artificiel prend des entrées, les pondère, les additionne, applique une fonction — et sort une valeur.">
+  <div class="rise">
+    <p class="part">Partie 2 · 30 min</p>
+    <p class="ghost-num">02</p>
+    <h2 class="slide-title">Le neurone<br>artificiel</h2>
+    <p class="agenda">Entrées · Poids · Biais · Somme pondérée · Activation · Intuition géométrique</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="Inspiration biologique" data-speaker-notes="Le neurone artificiel s'inspire — de loin — du neurone biologique. Dendrites qui reçoivent, corps qui intègre, axone qui transmet si le seuil est atteint. La métaphore s'arrête vite, mais elle éclaire.">
+  <p class="slide-kicker">2.0 · Inspiration</p>
+  <h2 class="slide-title">Du neurone biologique au neurone artificiel</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <h3>Biologie</h3>
+      <p>Les <strong>dendrites</strong> reçoivent des signaux électriques venant d'autres neurones. Le <strong>corps cellulaire</strong> les intègre. Si l'intégration dépasse un seuil, l'<strong>axone</strong> émet un signal à son tour.</p>
+      <h3 style="margin-top: 24px;">Modèle mathématique</h3>
+      <p>Chaque signal entrant devient un nombre. L'intégration devient une somme pondérée. Le seuil devient une fonction d'activation. Le tout est différentiable — donc apprenable.</p>
+    </div>
+    <figure class="diagram" style="padding: 30px;">
+      <svg viewBox="0 0 700 420" style="width:100%; height:auto;">
+        <!-- Bio side: cell body with dendrites -->
+        <g transform="translate(50, 210)">
+          <circle cx="120" cy="0" r="60" fill="var(--color-accent-2-100)" stroke="var(--color-accent-2-700)" stroke-width="2.5"></circle>
+          <path d="M60 0 L20 -80 M60 0 L20 -30 M60 0 L20 30 M60 0 L20 80" stroke="var(--color-accent-2-700)" stroke-width="2.5" fill="none"></path>
+          <path d="M180 0 L280 0" stroke="var(--color-accent-2-700)" stroke-width="3" fill="none"></path>
+          <circle cx="10" cy="-80" r="6" fill="var(--color-accent-2-600)"></circle>
+          <circle cx="10" cy="-30" r="6" fill="var(--color-accent-2-600)"></circle>
+          <circle cx="10" cy="30" r="6" fill="var(--color-accent-2-600)"></circle>
+          <circle cx="10" cy="80" r="6" fill="var(--color-accent-2-600)"></circle>
+          <text x="120" y="6" text-anchor="middle" fill="var(--color-accent-2-800)" font-size="18">soma</text>
+          <text x="120" y="-90" text-anchor="middle" font-size="18" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">Neurone biologique</text>
+        </g>
+        <!-- Arrow -->
+        <path d="M370 210 L430 210" stroke="var(--color-text)" stroke-width="3" fill="none" marker-end="url(#a2)"></path>
+        <!-- Artificial side -->
+        <g transform="translate(430, 210)">
+          <line x1="0" y1="-80" x2="90" y2="0" stroke="var(--color-accent)" stroke-width="2.5"></line>
+          <line x1="0" y1="-30" x2="90" y2="0" stroke="var(--color-accent)" stroke-width="2.5"></line>
+          <line x1="0" y1="30" x2="90" y2="0" stroke="var(--color-accent)" stroke-width="2.5"></line>
+          <line x1="0" y1="80" x2="90" y2="0" stroke="var(--color-accent)" stroke-width="2.5"></line>
+          <circle cx="0" cy="-80" r="10" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"></circle>
+          <circle cx="0" cy="-30" r="10" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"></circle>
+          <circle cx="0" cy="30" r="10" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"></circle>
+          <circle cx="0" cy="80" r="10" fill="var(--color-bg)" stroke="var(--color-accent)" stroke-width="2.5"></circle>
+          <circle cx="130" cy="0" r="40" fill="var(--color-accent)" stroke="var(--color-accent-700)" stroke-width="2.5"></circle>
+          <text x="130" y="7" text-anchor="middle" fill="var(--color-bg)" font-size="20">Σ · f</text>
+          <line x1="170" y1="0" x2="230" y2="0" stroke="var(--color-accent)" stroke-width="3"></line>
+          <text x="130" y="-90" text-anchor="middle" font-size="18" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">Neurone artificiel</text>
+        </g>
+        <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--color-text)"></path></marker></defs>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Anatomie" data-speaker-notes="Voici l'anatomie complète du neurone artificiel. On va décomposer chaque pièce : les entrées, les poids, le biais, la somme, l'activation.">
+  <p class="slide-kicker">2.1 · Anatomie</p>
+  <h2 class="slide-title">Anatomie du neurone artificiel</h2>
+  <figure class="diagram rise" style="margin-top: calc(2 * var(--baseline)); padding: 50px 60px;">
+    <svg viewBox="0 0 1500 500" style="width:100%; height:auto;">
+      <!-- Inputs -->
+      <g>
+        <circle cx="120" cy="100" r="34" class="node"></circle>
+        <text x="120" y="108" text-anchor="middle" font-size="30" fill="var(--color-text)">x₁</text>
+        <circle cx="120" cy="220" r="34" class="node"></circle>
+        <text x="120" y="228" text-anchor="middle" font-size="30" fill="var(--color-text)">x₂</text>
+        <circle cx="120" cy="340" r="34" class="node"></circle>
+        <text x="120" y="348" text-anchor="middle" font-size="30" fill="var(--color-text)">x₃</text>
+        <text x="120" y="410" text-anchor="middle" class="lbl-muted">entrées</text>
+      </g>
+      <!-- Weight lines with labels -->
+      <line x1="154" y1="100" x2="640" y2="220" stroke="var(--color-accent)" stroke-width="3"></line>
+      <line x1="154" y1="220" x2="640" y2="220" stroke="var(--color-accent)" stroke-width="3"></line>
+      <line x1="154" y1="340" x2="640" y2="220" stroke="var(--color-accent)" stroke-width="3"></line>
+      <rect x="330" y="120" width="70" height="40" rx="14" fill="var(--color-bg)"></rect>
+      <text x="365" y="147" text-anchor="middle" font-size="26" fill="var(--color-accent-700)">w₁</text>
+      <rect x="330" y="200" width="70" height="40" rx="14" fill="var(--color-bg)"></rect>
+      <text x="365" y="227" text-anchor="middle" font-size="26" fill="var(--color-accent-700)">w₂</text>
+      <rect x="330" y="290" width="70" height="40" rx="14" fill="var(--color-bg)"></rect>
+      <text x="365" y="317" text-anchor="middle" font-size="26" fill="var(--color-accent-700)">w₃</text>
+      <!-- Bias -->
+      <circle cx="120" cy="450" r="28" fill="var(--color-accent-2-100)" stroke="var(--color-accent-2-700)" stroke-width="2.5"></circle>
+      <text x="120" y="458" text-anchor="middle" font-size="24" fill="var(--color-accent-2-800)">+1</text>
+      <line x1="148" y1="450" x2="640" y2="220" stroke="var(--color-accent-2-600)" stroke-width="3"></line>
+      <text x="400" y="380" font-size="26" fill="var(--color-accent-2-700)">b</text>
+      <!-- Sum node -->
+      <circle cx="700" cy="220" r="70" class="node"></circle>
+      <text x="700" y="215" text-anchor="middle" font-size="42" fill="var(--color-accent)">Σ</text>
+      <text x="700" y="250" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">somme</text>
+      <!-- Arrow to activation -->
+      <line x1="770" y1="220" x2="900" y2="220" stroke="var(--color-text)" stroke-width="3" marker-end="url(#a3)"></line>
+      <text x="835" y="200" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">z</text>
+      <!-- Activation -->
+      <rect x="900" y="150" width="200" height="140" rx="30" fill="var(--color-accent)" stroke="var(--color-accent-700)" stroke-width="3"></rect>
+      <text x="1000" y="215" text-anchor="middle" font-size="34" fill="var(--color-bg)">f(z)</text>
+      <text x="1000" y="245" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-bg) 82%, transparent)">activation</text>
+      <!-- Output -->
+      <line x1="1100" y1="220" x2="1240" y2="220" stroke="var(--color-text)" stroke-width="3" marker-end="url(#a3)"></line>
+      <circle cx="1310" cy="220" r="44" fill="var(--color-accent-2-600)" stroke="var(--color-accent-2-800)" stroke-width="3"></circle>
+      <text x="1310" y="230" text-anchor="middle" font-size="30" fill="var(--color-bg)">ŷ</text>
+      <text x="1310" y="290" text-anchor="middle" class="lbl-muted">sortie</text>
+      <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--color-text)"></path></marker></defs>
+    </svg>
+  </figure>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Entrées et features" data-speaker-notes="Les entrées x₁, x₂… sont les caractéristiques de l'exemple. En vision, ce peut être les pixels. En finance, l'âge, le revenu, la durée du prêt. C'est le langage que le neurone comprend.">
+  <p class="slide-kicker">2.1 · Entrées</p>
+  <h2 class="slide-title">Entrées — les <em style="font-style:italic; color: var(--color-accent-700)">features</em></h2>
+  <div class="cols cols-2 rise" style="margin-top: calc(3 * var(--baseline) - 1cap);">
+    <div>
+      <p style="font-size: 30px; line-height: 1.4;">Chaque exemple présenté au neurone est un <strong>vecteur de nombres</strong> : ses <em style="font-style: italic;">features</em>.</p>
+      <p style="font-size: 28px; margin-top: 20px; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.4;">La qualité du modèle dépend directement de la qualité de ces caractéristiques. En deep learning, une bonne partie de ce travail est appris automatiquement par les couches profondes.</p>
+    </div>
+    <div>
+      <div class="callout" style="margin: 0; padding: 32px 40px; font-size: 26px;">
+        <span class="callout-kicker">Exemples de features</span>
+        <div style="font-size: 24px; line-height: 1.5; color: var(--color-text);">
+          <p style="margin: 8px 0;"><strong>Prêt bancaire</strong> — âge, revenu, durée, apports</p>
+          <p style="margin: 8px 0;"><strong>Image</strong> — intensité de chaque pixel</p>
+          <p style="margin: 8px 0;"><strong>Texte</strong> — fréquence des mots, embeddings</p>
+          <p style="margin: 8px 0;"><strong>Capteur</strong> — température, pression, vibration</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Poids et biais" data-speaker-notes="Les poids disent à quel point chaque entrée compte, et dans quel sens — un poids positif renforce, négatif inhibe. Le biais décale l'ensemble, il permet au neurone de s'activer même quand toutes les entrées sont nulles.">
+  <p class="slide-kicker">2.2 · Paramètres</p>
+  <h2 class="slide-title">Poids et biais — ce que le neurone apprend</h2>
+  <div class="cards rise">
+    <div class="card">
+      <span class="card-num">w</span>
+      <h3>Poids</h3>
+      <p>Un nombre par entrée. Positif → l'entrée pousse à activer. Négatif → elle freine. Grand en valeur absolue → grande influence.</p>
+    </div>
+    <div class="card sage">
+      <span class="card-num">b</span>
+      <h3>Biais</h3>
+      <p>Un décalage constant, indépendant des entrées. Sans lui, la frontière de décision passerait toujours par l'origine.</p>
+    </div>
+    <div class="card clay">
+      <span class="card-num">θ</span>
+      <h3>Paramètres θ</h3>
+      <p>Ensemble { poids, biais } — l'objet que l'apprentissage va ajuster. Tout le reste (entrées, fonction d'activation) est fixe.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Somme pondérée" data-speaker-notes="La somme pondérée z est le pré-activation. On multiplie chaque entrée par son poids, on additionne, on ajoute le biais. C'est du produit scalaire — rien de plus.">
+  <p class="slide-kicker">2.3 · Somme pondérée</p>
+  <h2 class="slide-title">La somme pondérée</h2>
+  <div class="formula rise">
+    z = w₁·x₁ + w₂·x₂ + w₃·x₃ + <em>b</em>
+    <div style="font-size: 32px; margin-top: 24px; color: color-mix(in srgb, var(--color-text) 65%, transparent);">
+      ou, en notation vectorielle :&nbsp;&nbsp; z = <strong>w</strong> · <strong>x</strong> + <em>b</em>
+    </div>
+    <span class="fnote">z est le <em style="font-style:italic;">pré-activation</em> — un simple nombre réel qui résume l'exemple.</span>
+  </div>
+  <p style="font-size: 26px; margin-top: calc(2 * var(--baseline)); max-width: 90ch; line-height: 1.4; color: color-mix(in srgb, var(--color-text) 75%, transparent);">Chaque entrée est <strong>pondérée</strong>, puis toutes les contributions s'ajoutent. Le biais offre un point de départ ajustable. Sur un ordinateur, c'est une seule instruction vectorielle.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Fonction d'activation" data-speaker-notes="Sans fonction d'activation, empiler des couches ne servirait à rien — le tout resterait une combinaison linéaire. L'activation apporte la non-linéarité qui permet aux réseaux d'apprendre des motifs complexes.">
+  <p class="slide-kicker">2.4 · Activation</p>
+  <h2 class="slide-title">La fonction d'activation</h2>
+  <div class="cols cols-4 rise" style="margin-top: calc(2.5 * var(--baseline)); gap: 32px;">
+    <figure style="margin:0; text-align:center;">
+      <svg viewBox="-1.2 -1.2 2.4 2.4" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="-1.1" y1="0" x2="1.1" y2="0" class="axis" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <line x1="0" y1="-1.1" x2="0" y2="1.1" class="axis" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <polyline points="-1.1,0.4 0,0.4 0,-0.4 1.1,-0.4" fill="none" stroke="var(--color-accent)" stroke-width="0.06" stroke-linejoin="round"></polyline>
+      </svg>
+      <figcaption style="font-family: var(--font-heading); font-size: 26px; margin-top: 12px;">Step</figcaption>
+      <p style="font-size: 20px; color: color-mix(in srgb, var(--color-text) 60%, transparent); margin: 6px 0 0;">0 ou 1 — la brique du perceptron</p>
+    </figure>
+    <figure style="margin:0; text-align:center;">
+      <svg viewBox="-6 -1.3 12 2.6" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="-6" y1="0" x2="6" y2="0" stroke="var(--color-divider)" stroke-width="0.05"></line>
+        <line x1="0" y1="-1.3" x2="0" y2="1.3" stroke="var(--color-divider)" stroke-width="0.05"></line>
+        <line x1="-6" y1="-1" x2="6" y2="-1" stroke="var(--color-divider)" stroke-width="0.03" stroke-dasharray="0.15 0.15"></line>
+        <line x1="-6" y1="1" x2="6" y2="1" stroke="var(--color-divider)" stroke-width="0.03" stroke-dasharray="0.15 0.15"></line>
+        <path d="M -6 -0.995 C -3 -0.995, -1 -0.9, 0 0 C 1 0.9, 3 0.995, 6 0.995" fill="none" stroke="var(--color-accent)" stroke-width="0.12"></path>
+      </svg>
+      <figcaption style="font-family: var(--font-heading); font-size: 26px; margin-top: 12px;">Sigmoid</figcaption>
+      <p style="font-size: 20px; color: color-mix(in srgb, var(--color-text) 60%, transparent); margin: 6px 0 0;">écrase entre 0 et 1</p>
+    </figure>
+    <figure style="margin:0; text-align:center;">
+      <svg viewBox="-6 -1.3 12 2.6" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="-6" y1="0" x2="6" y2="0" stroke="var(--color-divider)" stroke-width="0.05"></line>
+        <line x1="0" y1="-1.3" x2="0" y2="1.3" stroke="var(--color-divider)" stroke-width="0.05"></line>
+        <path d="M -6 -1 C -2 -1, -1 -0.85, 0 0 C 1 0.85, 2 1, 6 1" fill="none" stroke="var(--color-accent)" stroke-width="0.12"></path>
+      </svg>
+      <figcaption style="font-family: var(--font-heading); font-size: 26px; margin-top: 12px;">Tanh</figcaption>
+      <p style="font-size: 20px; color: color-mix(in srgb, var(--color-text) 60%, transparent); margin: 6px 0 0;">écrase entre −1 et 1</p>
+    </figure>
+    <figure style="margin:0; text-align:center;">
+      <svg viewBox="-3 -1 6 4" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="-3" y1="0" x2="3" y2="0" stroke="var(--color-divider)" stroke-width="0.03"></line>
+        <line x1="0" y1="-1" x2="0" y2="3" stroke="var(--color-divider)" stroke-width="0.03"></line>
+        <polyline points="-3,0 0,0 3,3" fill="none" stroke="var(--color-accent)" stroke-width="0.09" stroke-linejoin="round"></polyline>
+      </svg>
+      <figcaption style="font-family: var(--font-heading); font-size: 26px; margin-top: 12px;">ReLU</figcaption>
+      <p style="font-size: 20px; color: color-mix(in srgb, var(--color-text) 60%, transparent); margin: 6px 0 0;">standard du DL moderne</p>
+    </figure>
+  </div>
+  <p class="chart-caption" style="margin-top: calc(1.5 * var(--baseline));">Chaque fonction transforme la somme pondérée en un signal utile — binaire, borné, ou passant.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Intuition géométrique" data-speaker-notes="Géométriquement, un neurone dessine un hyperplan dans l'espace des entrées. Les points d'un côté sont activés, ceux de l'autre non. Le neurone est essentiellement un séparateur linéaire.">
+  <p class="slide-kicker">2.5 · Intuition géométrique</p>
+  <h2 class="slide-title">Un neurone dessine un hyperplan</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Dans l'espace des entrées, l'équation <strong>w·x + b = 0</strong> définit une droite (2D), un plan (3D), un hyperplan (nD).</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">D'un côté, le neurone renvoie une valeur positive ; de l'autre, négative. La fonction d'activation traduit ensuite en décision.</p>
+      <p style="font-size: 24px; margin-top: 20px; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Les poids déterminent l'orientation ; le biais, la position.</p>
+    </div>
+    <figure style="margin:0;">
+      <svg viewBox="-5 -5 10 10" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <!-- Grid -->
+        <g stroke="var(--color-divider)" stroke-width="0.03" opacity="0.6">
+          <line x1="-5" y1="-3" x2="5" y2="-3"></line><line x1="-5" y1="-1" x2="5" y2="-1"></line>
+          <line x1="-5" y1="1" x2="5" y2="1"></line><line x1="-5" y1="3" x2="5" y2="3"></line>
+          <line x1="-3" y1="-5" x2="-3" y2="5"></line><line x1="-1" y1="-5" x2="-1" y2="5"></line>
+          <line x1="1" y1="-5" x2="1" y2="5"></line><line x1="3" y1="-5" x2="3" y2="5"></line>
+        </g>
+        <line x1="-5" y1="0" x2="5" y2="0" stroke="color-mix(in srgb, var(--color-text) 40%, transparent)" stroke-width="0.05"></line>
+        <line x1="0" y1="-5" x2="0" y2="5" stroke="color-mix(in srgb, var(--color-text) 40%, transparent)" stroke-width="0.05"></line>
+        <!-- Decision line: w·x + b = 0, e.g. x + y = 1 -->
+        <line x1="-4" y1="-3" x2="4" y2="5" stroke="var(--color-accent)" stroke-width="0.12"></line>
+        <!-- Positive region shading -->
+        <polygon points="-4,-3 4,5 5,5 5,-5 -5,-5 -5,-3" fill="var(--color-accent)" opacity="0.08"></polygon>
+        <polygon points="-4,-3 4,5 -5,5" fill="var(--color-accent-2-600)" opacity="0.08"></polygon>
+        <!-- Points classe A -->
+        <g fill="var(--color-accent)">
+          <circle cx="1.5" cy="-2.5" r="0.2"></circle><circle cx="2.5" cy="-1" r="0.2"></circle><circle cx="3" cy="-3" r="0.2"></circle><circle cx="3.5" cy="1" r="0.2"></circle><circle cx="0.5" cy="-3.5" r="0.2"></circle>
+        </g>
+        <!-- Points classe B -->
+        <g fill="var(--color-accent-2-700)">
+          <circle cx="-2" cy="2" r="0.2"></circle><circle cx="-3" cy="3.5" r="0.2"></circle><circle cx="-1" cy="4" r="0.2"></circle><circle cx="-3.5" cy="1" r="0.2"></circle><circle cx="-2.5" cy="-0.5" r="0.2"></circle>
+        </g>
+        <text x="2.5" y="4.3" font-size="0.4" fill="var(--color-accent-700)" font-family="var(--font-heading)">w·x + b &gt; 0</text>
+        <text x="-4.5" y="-3.6" font-size="0.4" fill="var(--color-accent-2-700)" font-family="var(--font-heading)">w·x + b &lt; 0</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 3 — LE PERCEPTRON
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 3 — Le perceptron" data-speaker-notes="Troisième partie : le perceptron, c'est le premier neurone artificiel équipé d'une règle d'apprentissage — Rosenblatt, 1957. On l'utilise pour de la classification binaire.">
+  <div class="rise">
+    <p class="part">Partie 3 · 30 min</p>
+    <p class="ghost-num">03</p>
+    <h2 class="slide-title">Le perceptron</h2>
+    <p class="agenda">Décision · Classification binaire · Seuil · Frontière · Apprentissage · Mise à jour</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="Du neurone à la décision" data-speaker-notes="Un neurone avec une fonction seuil, c'est un perceptron. On l'utilise pour trancher entre deux classes. Rosenblatt, 1957, financé par la Marine américaine.">
+  <p class="slide-kicker">3.1 · Du neurone à la décision</p>
+  <h2 class="slide-title">Le perceptron, en une phrase</h2>
+  <div class="callout rise" style="max-width: 1500px;">
+    <span class="callout-kicker">Définition</span>
+    <div style="font-family: var(--font-heading); font-size: 46px; line-height: 1.25; color: var(--color-text);">Un <em style="font-style:italic; color: var(--color-accent-700)">perceptron</em> est un neurone artificiel muni d'une fonction seuil, entraîné à classer des exemples en deux catégories.</div>
+  </div>
+  <p style="margin-top: calc(2 * var(--baseline)); font-size: 26px; max-width: 90ch; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.4;">Frank Rosenblatt, 1957 — la première machine capable d'<em style="font-style:italic;">apprendre</em> à trier des données à partir d'exemples annotés.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Classification binaire" data-speaker-notes="Classification binaire — deux classes seulement. Spam ou non ? Diabétique ou non ? Chat ou chien ? On donne des exemples annotés, le perceptron apprend à trancher.">
+  <p class="slide-kicker">3.2 · Classification binaire</p>
+  <h2 class="slide-title">Deux classes, une décision</h2>
+  <div class="cols cols-3 rise">
+    <div>
+      <span class="num">1</span>
+      <h3>Spam ou pas ?</h3>
+      <p>Fréquence de certains mots-clés, présence de liens, longueur du message.</p>
+    </div>
+    <div>
+      <span class="num">2</span>
+      <h3>Client à risque ?</h3>
+      <p>Revenu, endettement, historique de paiements — accorder le prêt ou le refuser.</p>
+    </div>
+    <div>
+      <span class="num">3</span>
+      <h3>Tumeur bénigne ?</h3>
+      <p>Rayon, texture, symétrie sur une image médicale — bénin ou malin.</p>
+    </div>
+  </div>
+  <p style="margin-top: calc(2 * var(--baseline)); font-size: 26px; max-width: 90ch; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.4;">La sortie du perceptron n'est pas un nombre continu — c'est un <strong>oui</strong> ou un <strong>non</strong>.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Fonction seuil" data-speaker-notes="La fonction seuil renvoie 1 si z ≥ 0, sinon 0. C'est brutal mais efficace. Elle transforme le nombre réel en décision.">
+  <p class="slide-kicker">3.3 · Fonction seuil</p>
+  <h2 class="slide-title">La fonction seuil — <em style="font-style:italic; color: var(--color-accent-700)">Heaviside</em></h2>
+  <div class="split-two rise" style="margin-top: calc(2 * var(--baseline));">
+    <div>
+      <div class="formula" style="max-width: 100%; padding: 34px 40px; font-size: 42px;">
+        ŷ = <em>f</em>(z) = <br><br>
+        <span style="font-size: 32px;">&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;si&nbsp;&nbsp;z ≥ 0</span><br>
+        <span style="font-size: 32px;">&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;sinon</span>
+        <span class="fnote">avec z = <strong>w</strong> · <strong>x</strong> + <em>b</em></span>
+      </div>
+    </div>
+    <figure style="margin:0;">
+      <svg viewBox="-3 -0.5 6 2" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="-3" y1="0" x2="3" y2="0" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <line x1="0" y1="-0.4" x2="0" y2="1.5" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <line x1="-3" y1="1" x2="3" y2="1" stroke="var(--color-divider)" stroke-width="0.015" stroke-dasharray="0.08 0.08"></line>
+        <polyline points="-3,0 0,0 0,1 3,1" fill="none" stroke="var(--color-accent)" stroke-width="0.06" stroke-linejoin="miter"></polyline>
+        <text x="2.8" y="1.15" font-size="0.2" fill="color-mix(in srgb, var(--color-text) 60%, transparent)" text-anchor="end">1</text>
+        <text x="0.1" y="-0.15" font-size="0.2" fill="color-mix(in srgb, var(--color-text) 60%, transparent)">z</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Frontière de décision" data-speaker-notes="En 2D, la frontière est une droite. En 3D, un plan. Au-delà, un hyperplan qu'on ne peut plus dessiner. Mais le principe reste le même : couper l'espace en deux.">
+  <p class="slide-kicker">3.4 · Frontière de décision</p>
+  <h2 class="slide-title">La frontière de décision</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Le perceptron trace une <strong>droite</strong> — en 2D — qui sépare la classe 0 de la classe 1.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">Cette droite est entièrement définie par les poids et le biais. Apprendre le perceptron, c'est trouver la <strong>bonne</strong> droite.</p>
+      <div style="margin-top: 30px; padding: 24px 28px; background: var(--color-accent-2-100); border-radius: var(--radius-lg); font-size: 22px; line-height: 1.4;">
+        <strong>À retenir</strong> — l'orientation de la frontière vient des poids <em>w</em> ; sa position vient du biais <em>b</em>.
+      </div>
+    </div>
+    <figure style="margin:0;">
+      <svg viewBox="-5 -5 10 10" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <g stroke="var(--color-divider)" stroke-width="0.03" opacity="0.6">
+          <line x1="-5" y1="-3" x2="5" y2="-3"></line><line x1="-5" y1="0" x2="5" y2="0"></line>
+          <line x1="-5" y1="3" x2="5" y2="3"></line><line x1="-3" y1="-5" x2="-3" y2="5"></line>
+          <line x1="0" y1="-5" x2="0" y2="5"></line><line x1="3" y1="-5" x2="3" y2="5"></line>
+        </g>
+        <!-- Line -->
+        <line x1="-5" y1="4" x2="5" y2="-2" stroke="var(--color-accent)" stroke-width="0.12"></line>
+        <!-- Classe 1 -->
+        <g fill="var(--color-accent)">
+          <circle cx="2" cy="2" r="0.22"></circle><circle cx="3.5" cy="0.5" r="0.22"></circle><circle cx="1.5" cy="3.5" r="0.22"></circle><circle cx="3" cy="3" r="0.22"></circle><circle cx="4" cy="2" r="0.22"></circle><circle cx="0.5" cy="2.5" r="0.22"></circle><circle cx="2.5" cy="1" r="0.22"></circle>
+        </g>
+        <!-- Classe 0 -->
+        <g fill="var(--color-accent-2-700)">
+          <circle cx="-3" cy="-2" r="0.22"></circle><circle cx="-2" cy="-3.5" r="0.22"></circle><circle cx="-1" cy="-2" r="0.22"></circle><circle cx="-3.5" cy="-1" r="0.22"></circle><circle cx="-2.5" cy="0" r="0.22"></circle><circle cx="-1.5" cy="-3" r="0.22"></circle><circle cx="0" cy="-3" r="0.22"></circle>
+        </g>
+        <text x="3.5" y="3.6" font-size="0.42" font-family="var(--font-heading)" fill="var(--color-accent-700)" text-anchor="middle">Classe 1</text>
+        <text x="-3" y="-3.5" font-size="0.42" font-family="var(--font-heading)" fill="var(--color-accent-2-700)" text-anchor="middle">Classe 0</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Comment le perceptron apprend" data-speaker-notes="L'apprentissage du perceptron est étonnamment simple. Pour chaque exemple : on prédit, on regarde l'erreur, on ajuste les poids dans la direction qui corrige. On répète.">
+  <p class="slide-kicker">3.5 · Comment il apprend</p>
+  <h2 class="slide-title">L'algorithme d'apprentissage</h2>
+  <div class="steps rise">
+    <div class="step"><div class="step-num">1</div><div><h4>Initialiser les poids</h4><p>Petits nombres aléatoires — ou zéros. La position de départ n'a pas d'importance capitale.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><h4>Prendre un exemple (x, y)</h4><p>x est un vecteur de features, y la classe attendue (0 ou 1).</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><h4>Prédire ŷ</h4><p>Calculer z = w·x + b, puis appliquer la fonction seuil pour obtenir ŷ.</p></div></div>
+    <div class="step active"><div class="step-num">4</div><div><h4>Comparer et corriger</h4><p>Si ŷ ≠ y, mettre à jour les poids et le biais dans le sens qui aurait corrigé l'erreur.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div><h4>Recommencer</h4><p>Parcourir tous les exemples, plusieurs fois, jusqu'à convergence.</p></div></div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Règle de mise à jour" data-speaker-notes="La règle : nouveau w = ancien w + η·(y − ŷ)·x. Si le perceptron s'est trompé, on pousse les poids dans la direction de x, avec un signe qui dépend du sens de l'erreur. η est le taux d'apprentissage.">
+  <p class="slide-kicker">3.6 · Règle de mise à jour</p>
+  <h2 class="slide-title">La règle de mise à jour</h2>
+  <div class="formula rise">
+    w<sub style="font-size: 30px;">nouveau</sub> = w<sub style="font-size: 30px;">ancien</sub> + <em>η</em> · (y − ŷ) · x<br>
+    <span style="font-size: 42px;">b<sub style="font-size: 26px;">nouveau</sub> = b<sub style="font-size: 26px;">ancien</sub> + <em>η</em> · (y − ŷ)</span>
+    <span class="fnote">η — taux d'apprentissage (typiquement 0.01 à 0.1) · (y − ŷ) — signe de l'erreur : +1, 0 ou −1</span>
+  </div>
+  <div class="cols cols-3 rise" style="margin-top: calc(2.5 * var(--baseline));">
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 30px; color: var(--color-accent-700); margin: 0 0 12px;">Bonne prédiction</h3>
+      <p style="font-size: 24px; line-height: 1.4;">(y − ŷ) = 0. Aucune correction — le perceptron laisse ses poids intacts.</p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 30px; color: var(--color-accent-700); margin: 0 0 12px;">Faux négatif</h3>
+      <p style="font-size: 24px; line-height: 1.4;">Attendu 1, prédit 0. On augmente les poids dans la direction de x pour la prochaine fois.</p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 30px; color: var(--color-accent-700); margin: 0 0 12px;">Faux positif</h3>
+      <p style="font-size: 24px; line-height: 1.4;">Attendu 0, prédit 1. On diminue les poids dans la direction de x.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 4 — LES LIMITES DU PERCEPTRON
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 4 — Limites" data-speaker-notes="Quatrième partie : là où le perceptron bloque. Il ne peut résoudre qu'un problème linéairement séparable. Minsky et Papert l'ont montré en 1969 — et cela a gelé la recherche pendant plus d'une décennie.">
+  <div class="rise">
+    <p class="part">Partie 4 · 20 min</p>
+    <p class="ghost-num">04</p>
+    <h2 class="slide-title">Les limites<br>du perceptron</h2>
+    <p class="agenda">Séparabilité linéaire · Le cas XOR · Besoin de plusieurs neurones</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="Séparabilité linéaire" data-speaker-notes="Un perceptron ne peut apprendre que si les classes sont linéairement séparables. Une seule droite suffit à les séparer. À gauche : possible. À droite : impossible.">
+  <p class="slide-kicker">4.1 · Séparabilité linéaire</p>
+  <h2 class="slide-title">Une seule droite suffit-elle ?</h2>
+  <div class="cols cols-2 rise" style="margin-top: calc(2.5 * var(--baseline));">
+    <figure style="margin: 0;">
+      <svg viewBox="-5 -5 10 10" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <g stroke="var(--color-divider)" stroke-width="0.03" opacity="0.5">
+          <line x1="-5" y1="0" x2="5" y2="0"></line><line x1="0" y1="-5" x2="0" y2="5"></line>
+        </g>
+        <line x1="-5" y1="4" x2="5" y2="-2" stroke="var(--color-accent)" stroke-width="0.14"></line>
+        <g fill="var(--color-accent)">
+          <circle cx="2" cy="2" r="0.24"></circle><circle cx="3.5" cy="0.5" r="0.24"></circle><circle cx="1.5" cy="3.5" r="0.24"></circle><circle cx="3" cy="3" r="0.24"></circle><circle cx="4" cy="2" r="0.24"></circle><circle cx="0.5" cy="2.5" r="0.24"></circle>
+        </g>
+        <g fill="var(--color-accent-2-700)">
+          <circle cx="-3" cy="-2" r="0.24"></circle><circle cx="-2" cy="-3.5" r="0.24"></circle><circle cx="-1" cy="-2" r="0.24"></circle><circle cx="-3.5" cy="-1" r="0.24"></circle><circle cx="-2.5" cy="0" r="0.24"></circle><circle cx="0" cy="-3" r="0.24"></circle>
+        </g>
+      </svg>
+      <figcaption style="text-align: center; margin-top: 16px; font-family: var(--font-heading); font-size: 30px; color: var(--color-accent-700);">Linéairement séparable ✓</figcaption>
+    </figure>
+    <figure style="margin: 0;">
+      <svg viewBox="-5 -5 10 10" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <g stroke="var(--color-divider)" stroke-width="0.03" opacity="0.5">
+          <line x1="-5" y1="0" x2="5" y2="0"></line><line x1="0" y1="-5" x2="0" y2="5"></line>
+        </g>
+        <!-- Concentric classes -->
+        <g fill="var(--color-accent)">
+          <circle cx="0.3" cy="0.5" r="0.24"></circle><circle cx="-0.8" cy="0.2" r="0.24"></circle><circle cx="0.5" cy="-0.7" r="0.24"></circle><circle cx="-0.5" cy="-0.5" r="0.24"></circle><circle cx="1" cy="0" r="0.24"></circle><circle cx="0" cy="1" r="0.24"></circle>
+        </g>
+        <g fill="var(--color-accent-2-700)">
+          <circle cx="3" cy="0" r="0.24"></circle><circle cx="-3" cy="0.5" r="0.24"></circle><circle cx="0" cy="3.5" r="0.24"></circle><circle cx="0" cy="-3" r="0.24"></circle><circle cx="2.5" cy="2.5" r="0.24"></circle><circle cx="-2.5" cy="-2.5" r="0.24"></circle><circle cx="2.5" cy="-2.5" r="0.24"></circle><circle cx="-2.5" cy="2.5" r="0.24"></circle>
+        </g>
+        <line x1="-5" y1="0" x2="5" y2="0" stroke="var(--color-accent)" stroke-width="0.1" stroke-dasharray="0.2 0.2" opacity="0.7"></line>
+      </svg>
+      <figcaption style="text-align: center; margin-top: 16px; font-family: var(--font-heading); font-size: 30px; color: var(--color-accent-2-800);">Non séparable linéairement ✗</figcaption>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Le XOR" data-speaker-notes="Le contre-exemple historique : XOR. Quatre points, deux classes, aucune droite ne peut les séparer. Minsky et Papert, 1969.">
+  <p class="slide-kicker">4.2 · Le cas d'école</p>
+  <h2 class="slide-title">XOR — quatre points qui font tomber le perceptron</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">XOR (« ou exclusif ») renvoie <strong>1</strong> quand exactement une des deux entrées vaut 1.</p>
+      <table style="margin-top: 24px; font-size: 26px; border-collapse: collapse;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--color-divider); color: color-mix(in srgb, var(--color-text) 55%, transparent);">
+            <th style="padding: 10px 24px 10px 0; text-align:left;">x₁</th>
+            <th style="padding: 10px 24px; text-align:left;">x₂</th>
+            <th style="padding: 10px 24px; text-align:left;">y</th>
+          </tr>
+        </thead>
+        <tbody style="font-family: var(--font-heading);">
+          <tr><td style="padding: 8px 24px 8px 0;">0</td><td style="padding: 8px 24px;">0</td><td style="padding: 8px 24px; color: var(--color-accent-2-700);">0</td></tr>
+          <tr><td style="padding: 8px 24px 8px 0;">0</td><td style="padding: 8px 24px;">1</td><td style="padding: 8px 24px; color: var(--color-accent);">1</td></tr>
+          <tr><td style="padding: 8px 24px 8px 0;">1</td><td style="padding: 8px 24px;">0</td><td style="padding: 8px 24px; color: var(--color-accent);">1</td></tr>
+          <tr><td style="padding: 8px 24px 8px 0;">1</td><td style="padding: 8px 24px;">1</td><td style="padding: 8px 24px; color: var(--color-accent-2-700);">0</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 24px; margin-top: 24px; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Aucune droite ne peut séparer les <span style="color: var(--color-accent);">1</span> des <span style="color: var(--color-accent-2-800);">0</span>.</p>
+    </div>
+    <figure style="margin: 0;">
+      <svg viewBox="-0.5 -0.5 2 2" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <g stroke="var(--color-divider)" stroke-width="0.008">
+          <line x1="-0.5" y1="0" x2="1.5" y2="0"></line><line x1="0" y1="-0.5" x2="0" y2="1.5"></line>
+          <line x1="-0.5" y1="1" x2="1.5" y2="1"></line><line x1="1" y1="-0.5" x2="1" y2="1.5"></line>
+        </g>
+        <!-- Tentative lines that all fail -->
+        <line x1="-0.4" y1="0.3" x2="1.4" y2="0.7" stroke="var(--color-accent-2-600)" stroke-width="0.02" stroke-dasharray="0.05 0.05" opacity="0.5"></line>
+        <line x1="0.3" y1="-0.4" x2="0.7" y2="1.4" stroke="var(--color-accent-2-600)" stroke-width="0.02" stroke-dasharray="0.05 0.05" opacity="0.5"></line>
+        <line x1="-0.4" y1="1.4" x2="1.4" y2="-0.4" stroke="var(--color-accent-2-600)" stroke-width="0.02" stroke-dasharray="0.05 0.05" opacity="0.5"></line>
+        <!-- Points -->
+        <circle cx="0" cy="0" r="0.08" fill="var(--color-accent-2-700)"></circle>
+        <circle cx="1" cy="1" r="0.08" fill="var(--color-accent-2-700)"></circle>
+        <circle cx="0" cy="1" r="0.08" fill="var(--color-accent)"></circle>
+        <circle cx="1" cy="0" r="0.08" fill="var(--color-accent)"></circle>
+        <text x="-0.15" y="-0.08" font-size="0.09" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">(0,0)</text>
+        <text x="1.05" y="-0.08" font-size="0.09" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">(1,0)</text>
+        <text x="-0.15" y="1.15" font-size="0.09" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">(0,1)</text>
+        <text x="1.05" y="1.15" font-size="0.09" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">(1,1)</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Exemple : le tir à l'arc" data-speaker-notes="Un exemple concret pour illustrer. Imaginez un archer qui vise une cible. Une seule règle linéaire — 'tirer plus fort si trop court' — ne suffit pas : il faut aussi corriger la hauteur, le vent, la distance. Autrement dit, plusieurs décisions combinées.">
+  <p class="slide-kicker">4.3 · Un exemple concret</p>
+  <h2 class="slide-title">Le tir à l'arc</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Un archer veut tirer dans le mille. Avec une seule règle — <em style="font-style:italic;">« viser plus haut si trop court »</em> — il n'ira pas loin.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">Il doit combiner plusieurs signaux : distance, vent, hauteur, tension. Chaque signal a besoin de sa propre correction.</p>
+      <div style="margin-top: 28px; padding: 24px 28px; background: var(--color-accent-100); border-radius: var(--radius-lg); font-size: 24px; line-height: 1.4; color: var(--color-accent-800);">
+        <strong>Analogie</strong> — un perceptron unique = une seule règle. Un vrai tireur combine des dizaines de micro-corrections. Il faut plusieurs neurones.
+      </div>
+    </div>
+    <figure style="margin: 0;">
+      <svg viewBox="0 0 500 400" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <!-- Target -->
+        <circle cx="380" cy="200" r="110" fill="none" stroke="var(--color-accent-2-700)" stroke-width="3"></circle>
+        <circle cx="380" cy="200" r="80" fill="none" stroke="var(--color-accent-2-700)" stroke-width="3"></circle>
+        <circle cx="380" cy="200" r="50" fill="none" stroke="var(--color-accent)" stroke-width="3"></circle>
+        <circle cx="380" cy="200" r="20" fill="var(--color-accent)"></circle>
+        <!-- Archer -->
+        <circle cx="80" cy="200" r="18" fill="var(--color-accent-2-800)"></circle>
+        <path d="M60 240 L80 218 L100 240 L100 300 M80 218 L80 280" stroke="var(--color-accent-2-800)" stroke-width="4" fill="none" stroke-linecap="round"></path>
+        <!-- Bow -->
+        <path d="M110 190 Q130 200 110 210" stroke="var(--color-accent-2-800)" stroke-width="3" fill="none"></path>
+        <!-- Three arrow trajectories -->
+        <path d="M115 195 Q245 100 375 195" stroke="var(--color-accent)" stroke-width="3" fill="none" stroke-dasharray="8 6" opacity="0.5"></path>
+        <path d="M115 200 Q245 240 375 260" stroke="var(--color-accent)" stroke-width="3" fill="none" stroke-dasharray="8 6" opacity="0.5"></path>
+        <path d="M115 205 Q245 205 375 205" stroke="var(--color-accent)" stroke-width="4" fill="none"></path>
+        <text x="80" y="340" text-anchor="middle" font-size="18" fill="color-mix(in srgb, var(--color-text) 60%, transparent)">une règle unique</text>
+        <text x="380" y="340" text-anchor="middle" font-size="18" fill="color-mix(in srgb, var(--color-text) 60%, transparent)">ne suffit pas</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content centered" data-label="Besoin de plusieurs neurones" data-speaker-notes="Conclusion de cette partie : un seul neurone est trop pauvre. Il faut en combiner plusieurs — assemblés en couches, ils peuvent tracer des frontières arbitrairement complexes. C'est ce qu'on va voir dans la partie suivante.">
+  <div class="callout rise" style="max-width: 1500px; text-align: center; padding: 60px 80px;">
+    <span class="callout-kicker" style="display:block;">La sortie</span>
+    <div style="font-family: var(--font-heading); font-size: 56px; line-height: 1.25; color: var(--color-text);">Une seule frontière ne peut pas tout séparer.<br><span style="color: var(--color-accent-700);">Il faut en combiner plusieurs.</span></div>
+  </div>
+  <p style="margin-top: calc(2 * var(--baseline)); font-size: 26px; max-width: 60ch; text-align: center; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.4;">C'est cette idée — <strong>empiler des neurones</strong> — qui donne naissance au perceptron multi-couches.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 5 — DU PERCEPTRON AU MLP
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 5 — MLP" data-speaker-notes="Cinquième partie : on assemble. Plusieurs neurones côte à côte, puis plusieurs couches. C'est le Multi-Layer Perceptron — le réseau de neurones classique.">
+  <div class="rise">
+    <p class="part">Partie 5 · 30 min</p>
+    <p class="ghost-num">05</p>
+    <h2 class="slide-title">Du perceptron<br>au MLP</h2>
+    <p class="agenda">Plusieurs neurones · Couches · Propagation · Non-linéarité · Nombre de paramètres</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="Plusieurs neurones" data-speaker-notes="Idée d'abord : plusieurs neurones en parallèle, chacun avec ses propres poids. Chaque neurone trace sa frontière ; ensemble, ils découpent l'espace en régions plus riches.">
+  <p class="slide-kicker">5.1 · Plusieurs neurones</p>
+  <h2 class="slide-title">Plusieurs neurones en parallèle</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Un neurone = une frontière. <strong>N neurones</strong> côte à côte = N frontières.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">Chaque neurone extrait un signal différent : « est-ce vertical ? », « est-ce à droite ? »… Ils constituent une nouvelle représentation des données.</p>
+      <p style="font-size: 24px; margin-top: 20px; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Cette représentation devient l'entrée d'une couche suivante — qui recombine.</p>
+    </div>
+    <figure class="diagram" style="padding: 40px;">
+      <svg viewBox="0 0 500 400" style="width:100%; height:auto;">
+        <!-- Inputs -->
+        <circle cx="80" cy="120" r="28" class="node"></circle>
+        <text x="80" y="128" text-anchor="middle" font-size="22">x₁</text>
+        <circle cx="80" cy="280" r="28" class="node"></circle>
+        <text x="80" y="288" text-anchor="middle" font-size="22">x₂</text>
+        <!-- 3 parallel neurons -->
+        <circle cx="300" cy="80" r="34" class="node-hidden"></circle>
+        <circle cx="300" cy="200" r="34" class="node-hidden"></circle>
+        <circle cx="300" cy="320" r="34" class="node-hidden"></circle>
+        <!-- edges -->
+        <g class="edge">
+          <line x1="108" y1="120" x2="266" y2="80"></line>
+          <line x1="108" y1="120" x2="266" y2="200"></line>
+          <line x1="108" y1="120" x2="266" y2="320"></line>
+          <line x1="108" y1="280" x2="266" y2="80"></line>
+          <line x1="108" y1="280" x2="266" y2="200"></line>
+          <line x1="108" y1="280" x2="266" y2="320"></line>
+        </g>
+        <!-- Output -->
+        <line x1="334" y1="80" x2="430" y2="200" class="edge"></line>
+        <line x1="334" y1="200" x2="430" y2="200" class="edge"></line>
+        <line x1="334" y1="320" x2="430" y2="200" class="edge"></line>
+        <circle cx="450" cy="200" r="30" class="node-out"></circle>
+        <text x="450" y="209" text-anchor="middle" font-size="22" fill="var(--color-bg)">ŷ</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Couches" data-speaker-notes="Structuration en couches : la couche d'entrée porte les features, une ou plusieurs couches cachées transforment, la couche de sortie prédit. Une couche 'cachée' l'est parce qu'on n'en observe ni l'entrée directe ni la sortie finale.">
+  <p class="slide-kicker">5.2 · Couches</p>
+  <h2 class="slide-title">Input, Hidden, Output</h2>
+  <figure class="diagram rise" style="margin-top: calc(2 * var(--baseline)); padding: 50px 60px;">
+    <svg viewBox="0 0 1400 520" style="width:100%; height:auto;">
+      <!-- Input layer -->
+      <g>
+        <circle cx="150" cy="80" r="34" class="node"></circle>
+        <circle cx="150" cy="180" r="34" class="node"></circle>
+        <circle cx="150" cy="280" r="34" class="node"></circle>
+        <circle cx="150" cy="380" r="34" class="node"></circle>
+        <text x="150" y="470" text-anchor="middle" font-family="var(--font-heading)" font-size="26" fill="var(--color-accent-700)">Input</text>
+        <text x="150" y="498" text-anchor="middle" font-size="20" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">features</text>
+      </g>
+      <!-- Hidden 1 -->
+      <g>
+        <circle cx="500" cy="60" r="34" class="node-hidden"></circle>
+        <circle cx="500" cy="160" r="34" class="node-hidden"></circle>
+        <circle cx="500" cy="260" r="34" class="node-hidden"></circle>
+        <circle cx="500" cy="360" r="34" class="node-hidden"></circle>
+        <circle cx="500" cy="420" r="34" class="node-hidden"></circle>
+        <text x="500" y="470" text-anchor="middle" font-family="var(--font-heading)" font-size="26" fill="var(--color-accent-2-800)">Hidden 1</text>
+      </g>
+      <!-- Hidden 2 -->
+      <g>
+        <circle cx="850" cy="100" r="34" class="node-hidden"></circle>
+        <circle cx="850" cy="200" r="34" class="node-hidden"></circle>
+        <circle cx="850" cy="300" r="34" class="node-hidden"></circle>
+        <circle cx="850" cy="400" r="34" class="node-hidden"></circle>
+        <text x="850" y="470" text-anchor="middle" font-family="var(--font-heading)" font-size="26" fill="var(--color-accent-2-800)">Hidden 2</text>
+      </g>
+      <!-- Output -->
+      <g>
+        <circle cx="1200" cy="220" r="36" class="node-out"></circle>
+        <circle cx="1200" cy="320" r="36" class="node-out"></circle>
+        <text x="1200" y="470" text-anchor="middle" font-family="var(--font-heading)" font-size="26" fill="var(--color-accent-700)">Output</text>
+        <text x="1200" y="498" text-anchor="middle" font-size="20" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">prédictions</text>
+      </g>
+      <!-- Connections -->
+      <g class="edge">
+        <!-- input to hidden1 -->
+        <g>
+          <line x1="184" y1="80" x2="466" y2="60"></line><line x1="184" y1="80" x2="466" y2="160"></line><line x1="184" y1="80" x2="466" y2="260"></line><line x1="184" y1="80" x2="466" y2="360"></line><line x1="184" y1="80" x2="466" y2="420"></line>
+          <line x1="184" y1="180" x2="466" y2="60"></line><line x1="184" y1="180" x2="466" y2="160"></line><line x1="184" y1="180" x2="466" y2="260"></line><line x1="184" y1="180" x2="466" y2="360"></line><line x1="184" y1="180" x2="466" y2="420"></line>
+          <line x1="184" y1="280" x2="466" y2="60"></line><line x1="184" y1="280" x2="466" y2="160"></line><line x1="184" y1="280" x2="466" y2="260"></line><line x1="184" y1="280" x2="466" y2="360"></line><line x1="184" y1="280" x2="466" y2="420"></line>
+          <line x1="184" y1="380" x2="466" y2="60"></line><line x1="184" y1="380" x2="466" y2="160"></line><line x1="184" y1="380" x2="466" y2="260"></line><line x1="184" y1="380" x2="466" y2="360"></line><line x1="184" y1="380" x2="466" y2="420"></line>
+        </g>
+        <!-- hidden1 to hidden2 -->
+        <g>
+          <line x1="534" y1="60" x2="816" y2="100"></line><line x1="534" y1="60" x2="816" y2="200"></line><line x1="534" y1="60" x2="816" y2="300"></line><line x1="534" y1="60" x2="816" y2="400"></line>
+          <line x1="534" y1="160" x2="816" y2="100"></line><line x1="534" y1="160" x2="816" y2="200"></line><line x1="534" y1="160" x2="816" y2="300"></line><line x1="534" y1="160" x2="816" y2="400"></line>
+          <line x1="534" y1="260" x2="816" y2="100"></line><line x1="534" y1="260" x2="816" y2="200"></line><line x1="534" y1="260" x2="816" y2="300"></line><line x1="534" y1="260" x2="816" y2="400"></line>
+          <line x1="534" y1="360" x2="816" y2="100"></line><line x1="534" y1="360" x2="816" y2="200"></line><line x1="534" y1="360" x2="816" y2="300"></line><line x1="534" y1="360" x2="816" y2="400"></line>
+          <line x1="534" y1="420" x2="816" y2="100"></line><line x1="534" y1="420" x2="816" y2="200"></line><line x1="534" y1="420" x2="816" y2="300"></line><line x1="534" y1="420" x2="816" y2="400"></line>
+        </g>
+        <!-- hidden2 to output -->
+        <g>
+          <line x1="884" y1="100" x2="1164" y2="220"></line><line x1="884" y1="100" x2="1164" y2="320"></line>
+          <line x1="884" y1="200" x2="1164" y2="220"></line><line x1="884" y1="200" x2="1164" y2="320"></line>
+          <line x1="884" y1="300" x2="1164" y2="220"></line><line x1="884" y1="300" x2="1164" y2="320"></line>
+          <line x1="884" y1="400" x2="1164" y2="220"></line><line x1="884" y1="400" x2="1164" y2="320"></line>
+        </g>
+      </g>
+    </svg>
+  </figure>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Propagation" data-speaker-notes="Propagation avant : les données traversent le réseau de gauche à droite, couche après couche. Chaque couche prend la sortie de la précédente et applique somme pondérée + activation.">
+  <p class="slide-kicker">5.3 · Propagation</p>
+  <h2 class="slide-title">La propagation de l'information</h2>
+  <div class="steps rise" style="margin-top: calc(2.5 * var(--baseline));">
+    <div class="step"><div class="step-num">1</div><div><h4>Entrée</h4><p>Le vecteur x arrive en tête du réseau.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><h4>Couche cachée h₁ = f(W₁·x + b₁)</h4><p>Somme pondérée puis activation, pour chaque neurone de la couche.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><h4>Couche cachée h₂ = f(W₂·h₁ + b₂)</h4><p>La sortie de la couche précédente devient l'entrée de la suivante.</p></div></div>
+    <div class="step active"><div class="step-num">4</div><div><h4>Sortie ŷ = g(W₃·h₂ + b₃)</h4><p>Une dernière activation, souvent différente (sigmoid, softmax, ou identité selon la tâche).</p></div></div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Non-linéarité" data-speaker-notes="Point crucial : sans les fonctions d'activation non linéaires entre les couches, le réseau se ramène à un seul neurone. C'est l'activation qui donne au MLP sa capacité à modéliser des motifs complexes.">
+  <p class="slide-kicker">5.4 · Non-linéarité</p>
+  <h2 class="slide-title">Pourquoi la non-linéarité est indispensable</h2>
+  <div class="callout rise" style="max-width: 1500px;">
+    <span class="callout-kicker">Fait mathématique</span>
+    <div style="font-family: var(--font-heading); font-size: 40px; line-height: 1.3; color: var(--color-text);">Sans fonction d'activation non linéaire, empiler N couches revient à <em style="font-style:italic; color: var(--color-accent-700)">une seule</em> couche.</div>
+  </div>
+  <div class="cols cols-2 rise" style="margin-top: calc(2 * var(--baseline)); gap: 64px;">
+    <div>
+      <p style="font-size: 26px; line-height: 1.45;">Deux couches linéaires successives — W₂ · (W₁ · x) — se réduisent à une seule matrice W₃ · x. La profondeur n'apporte rien.</p>
+    </div>
+    <div>
+      <p style="font-size: 26px; line-height: 1.45;">Une non-linéarité entre les couches (ReLU, tanh…) casse cette réduction. Le réseau peut alors approcher <strong>toute</strong> fonction continue — théorème d'approximation universelle.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Nombre de paramètres" data-speaker-notes="Combien de paramètres a un MLP ? Pour chaque couche : (entrées × neurones) poids + neurones biais. Ça grossit vite. C'est ce qui explique la puissance et le coût des grands modèles.">
+  <p class="slide-kicker">5.5 · Compter les paramètres</p>
+  <h2 class="slide-title">Combien de paramètres ?</h2>
+  <table class="table-simple rise">
+    <thead>
+      <tr>
+        <th>Couche</th>
+        <th>Entrées</th>
+        <th>Neurones</th>
+        <th>Poids</th>
+        <th>Biais</th>
+        <th style="text-align: right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Hidden 1</td><td>784</td><td>128</td><td>100 352</td><td>128</td><td>100 480</td></tr>
+      <tr><td>Hidden 2</td><td>128</td><td>64</td><td>8 192</td><td>64</td><td>8 256</td></tr>
+      <tr><td>Output</td><td>64</td><td>10</td><td>640</td><td>10</td><td>650</td></tr>
+      <tr style="font-family: var(--font-heading);"><td colspan="5" style="padding-top: 30px;">Total réseau</td><td style="padding-top: 30px; font-size: 34px;">109 386</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top: calc(2 * var(--baseline)); font-size: 24px; max-width: 80ch; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Ex. classif. MNIST — image 28×28 = 784 pixels, 10 chiffres. À titre de comparaison, GPT-4 en compte plusieurs centaines de milliards.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 6 — COMMENT UN RÉSEAU APPREND
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 6 — Apprentissage" data-speaker-notes="Sixième partie — le cœur du DL. Comment un réseau à des centaines de milliers de paramètres arrive-t-il à trouver de bons poids ? Forward pass, loss, gradient, backpropagation, optimizer.">
+  <div class="rise">
+    <p class="part">Partie 6 · 40 min</p>
+    <p class="ghost-num">06</p>
+    <h2 class="slide-title">Comment un réseau<br>de neurones apprend</h2>
+    <p class="agenda">Forward · Loss · Gradient · Descente · Backpropagation · Optimizer · Mise à jour</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="La boucle d'apprentissage" data-speaker-notes="Vue d'ensemble avant de détailler. Cette boucle tourne des milliers de fois. À chaque tour : forward, loss, backward, update. C'est tout.">
+  <p class="slide-kicker">6.0 · Vue d'ensemble</p>
+  <h2 class="slide-title">La boucle d'apprentissage</h2>
+  <figure class="rise" style="margin-top: calc(2.5 * var(--baseline)); display: flex; justify-content: center;">
+    <svg viewBox="0 0 1400 400" style="width: 100%; max-width: 1600px; height: auto;">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--color-accent)"></path>
+        </marker>
+      </defs>
+      <!-- 4 boxes around a loop -->
+      <g>
+        <rect x="60" y="140" width="240" height="120" rx="30" fill="var(--color-surface)" stroke="var(--color-accent)" stroke-width="3"></rect>
+        <text x="180" y="192" text-anchor="middle" font-family="var(--font-heading)" font-size="30" fill="var(--color-text)">1 · Forward</text>
+        <text x="180" y="228" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 65%, transparent)">calculer ŷ</text>
+      </g>
+      <g>
+        <rect x="420" y="140" width="240" height="120" rx="30" fill="var(--color-surface)" stroke="var(--color-accent)" stroke-width="3"></rect>
+        <text x="540" y="192" text-anchor="middle" font-family="var(--font-heading)" font-size="30" fill="var(--color-text)">2 · Loss</text>
+        <text x="540" y="228" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 65%, transparent)">mesurer l'erreur</text>
+      </g>
+      <g>
+        <rect x="780" y="140" width="240" height="120" rx="30" fill="var(--color-surface)" stroke="var(--color-accent)" stroke-width="3"></rect>
+        <text x="900" y="192" text-anchor="middle" font-family="var(--font-heading)" font-size="30" fill="var(--color-text)">3 · Backward</text>
+        <text x="900" y="228" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 65%, transparent)">calculer les gradients</text>
+      </g>
+      <g>
+        <rect x="1140" y="140" width="240" height="120" rx="30" fill="var(--color-accent-100)" stroke="var(--color-accent-700)" stroke-width="3"></rect>
+        <text x="1260" y="192" text-anchor="middle" font-family="var(--font-heading)" font-size="30" fill="var(--color-accent-800)">4 · Update</text>
+        <text x="1260" y="228" text-anchor="middle" font-size="22" fill="var(--color-accent-800)">ajuster les poids</text>
+      </g>
+      <!-- Arrows between -->
+      <line x1="300" y1="200" x2="418" y2="200" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr)"></line>
+      <line x1="660" y1="200" x2="778" y2="200" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr)"></line>
+      <line x1="1020" y1="200" x2="1138" y2="200" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arr)"></line>
+      <!-- Loop back -->
+      <path d="M 1260 140 Q 1260 60 720 60 Q 180 60 180 140" stroke="var(--color-accent)" stroke-width="3" fill="none" stroke-dasharray="10 6" marker-end="url(#arr)"></path>
+      <text x="720" y="40" text-anchor="middle" font-size="22" fill="color-mix(in srgb, var(--color-text) 65%, transparent)">répéter pour chaque batch d'exemples</text>
+    </svg>
+  </figure>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Forward pass" data-speaker-notes="Forward pass : on présente un exemple, on le fait traverser le réseau, on récupère une prédiction. Rien de plus. C'est le mode 'utilisation' du réseau.">
+  <p class="slide-kicker">6.1 · Forward pass</p>
+  <h2 class="slide-title">Forward pass — prédire</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">On fait passer un exemple <strong>x</strong> à travers le réseau, couche après couche, jusqu'à la sortie <strong>ŷ</strong>.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">C'est purement du calcul en avant — pas d'apprentissage à cette étape.</p>
+      <p style="font-size: 24px; margin-top: 24px; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Tous les <strong>z</strong> et <strong>h</strong> intermédiaires sont mémorisés — ils serviront à la backpropagation.</p>
+    </div>
+    <figure class="diagram" style="padding: 40px;">
+      <svg viewBox="0 0 500 350" style="width:100%; height:auto;">
+        <circle cx="60" cy="120" r="26" class="node"></circle>
+        <circle cx="60" cy="230" r="26" class="node"></circle>
+        <circle cx="220" cy="80" r="30" class="node-hidden"></circle>
+        <circle cx="220" cy="180" r="30" class="node-hidden"></circle>
+        <circle cx="220" cy="280" r="30" class="node-hidden"></circle>
+        <circle cx="380" cy="180" r="30" class="node-out"></circle>
+        <g class="edge-hi">
+          <line x1="86" y1="120" x2="190" y2="80"></line><line x1="86" y1="120" x2="190" y2="180"></line><line x1="86" y1="120" x2="190" y2="280"></line>
+          <line x1="86" y1="230" x2="190" y2="80"></line><line x1="86" y1="230" x2="190" y2="180"></line><line x1="86" y1="230" x2="190" y2="280"></line>
+          <line x1="250" y1="80" x2="350" y2="180"></line><line x1="250" y1="180" x2="350" y2="180"></line><line x1="250" y1="280" x2="350" y2="180"></line>
+        </g>
+        <text x="60" y="30" text-anchor="middle" font-family="var(--font-heading)" font-size="22" fill="var(--color-text)">x</text>
+        <text x="380" y="130" text-anchor="middle" font-family="var(--font-heading)" font-size="22" fill="var(--color-accent-700)">ŷ</text>
+        <path d="M 40 320 L 440 320" stroke="var(--color-accent)" stroke-width="3" marker-end="url(#arrfwd)" fill="none"></path>
+        <text x="240" y="345" text-anchor="middle" font-size="20" fill="var(--color-accent-700)">sens de propagation</text>
+        <defs><marker id="arrfwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--color-accent)"></path></marker></defs>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Prédiction et Loss" data-speaker-notes="La loss quantifie l'écart entre la prédiction ŷ et la vérité y. On la choisit selon la tâche : MSE pour la régression, cross-entropy pour la classification.">
+  <p class="slide-kicker">6.2 · Prédiction et Loss</p>
+  <h2 class="slide-title">Mesurer l'erreur — la fonction de coût</h2>
+  <div class="cards rise">
+    <div class="card">
+      <h3>MSE</h3>
+      <p style="font-family: 'Cambria Math', Georgia, serif; font-size: 26px; margin: 8px 0;">L = ½ · (y − ŷ)²</p>
+      <p>Erreur quadratique moyenne — pour la régression. Pénalise plus fort les grosses erreurs.</p>
+    </div>
+    <div class="card sage">
+      <h3>Cross-entropy</h3>
+      <p style="font-family: 'Cambria Math', Georgia, serif; font-size: 26px; margin: 8px 0;">L = −Σ yᵢ · log(ŷᵢ)</p>
+      <p>Pour la classification. Explose quand la classe correcte reçoit une probabilité proche de 0.</p>
+    </div>
+    <div class="card clay">
+      <h3>Objectif</h3>
+      <p style="font-family: var(--font-heading); font-size: 30px; margin: 8px 0; color: var(--color-accent-800);">minimiser L</p>
+      <p>Un seul nombre à faire descendre — c'est tout ce que voit l'algorithme d'apprentissage.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Gradient" data-speaker-notes="Le gradient est la dérivée de la loss par rapport à chaque poids. Il indique la direction dans laquelle il faut BOUGER pour AUGMENTER la loss. On va donc dans le sens opposé.">
+  <p class="slide-kicker">6.3 · Gradient</p>
+  <h2 class="slide-title">Le gradient — pente locale</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Le <strong>gradient</strong> de la loss par rapport à un poids <em>w</em>, noté <em>∂L/∂w</em>, indique comment L varie si l'on bouge <em>w</em>.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">Grand positif → augmenter <em>w</em> augmente L (donc il faut le diminuer). Grand négatif → l'inverse.</p>
+      <div class="formula" style="max-width: 100%; margin-top: 24px; font-size: 34px; padding: 24px 32px;">
+        ∇L = <span style="font-size: 32px;">(</span> <em>∂L/∂w₁</em> , <em>∂L/∂w₂</em> , … <span style="font-size: 32px;">)</span>
+        <span class="fnote">un vecteur — une composante par paramètre.</span>
+      </div>
+    </div>
+    <figure style="margin: 0;">
+      <svg viewBox="-1 -0.2 6 4" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <!-- Parabola: L(w) = (w-3)² -->
+        <line x1="0" y1="3.5" x2="5" y2="3.5" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <line x1="0" y1="0" x2="0" y2="3.7" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <path d="M 0.2 0.3 Q 3 6 5 0.3" stroke="var(--color-accent)" stroke-width="0.05" fill="none" transform="translate(0, 0)"></path>
+        <!-- Tangent at w=1 -->
+        <line x1="0.2" y1="3.2" x2="2.5" y2="0.2" stroke="var(--color-accent-2-700)" stroke-width="0.04"></line>
+        <circle cx="1.2" cy="2.02" r="0.1" fill="var(--color-accent-2-700)"></circle>
+        <text x="4.5" y="3.75" font-size="0.22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">w</text>
+        <text x="-0.1" y="0.3" font-size="0.22" fill="color-mix(in srgb, var(--color-text) 55%, transparent)">L</text>
+        <text x="1.7" y="1.7" font-size="0.22" fill="var(--color-accent-2-800)" font-family="var(--font-heading)">pente = ∂L/∂w</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Gradient Descent" data-speaker-notes="Descente de gradient : à chaque pas, on bouge chaque poids d'une petite quantité dans la direction opposée au gradient. Le pas est modulé par η, le taux d'apprentissage.">
+  <p class="slide-kicker">6.4 · Descente de gradient</p>
+  <h2 class="slide-title">La descente de gradient</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <div class="formula" style="max-width: 100%; font-size: 40px; padding: 32px 38px;">
+        w ← w − <em>η</em> · <em>∂L/∂w</em>
+        <span class="fnote">On soustrait le gradient car on veut <em style="font-style:italic;">descendre</em> — aller vers un L plus bas.</span>
+      </div>
+      <p style="font-size: 26px; margin-top: 24px; line-height: 1.4;"><strong>η</strong> — le <em>taux d'apprentissage</em>. Trop petit : convergence lente. Trop grand : on saute par-dessus le minimum.</p>
+    </div>
+    <figure style="margin: 0;">
+      <svg viewBox="-1 -0.2 6 4" style="width:100%; height:auto; background: var(--color-surface); border-radius: var(--radius-lg);">
+        <line x1="0" y1="3.5" x2="5" y2="3.5" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <line x1="0" y1="0" x2="0" y2="3.7" stroke="var(--color-divider)" stroke-width="0.02"></line>
+        <!-- Bowl -->
+        <path d="M 0.2 0.3 Q 2.5 6 4.8 0.3" stroke="var(--color-accent-2-600)" stroke-width="0.05" fill="none"></path>
+        <!-- Ball descent (points along parabola) -->
+        <circle cx="0.5" cy="2.65" r="0.09" fill="var(--color-accent)"></circle>
+        <circle cx="1.0" cy="1.7" r="0.09" fill="var(--color-accent)"></circle>
+        <circle cx="1.5" cy="1.1" r="0.09" fill="var(--color-accent)"></circle>
+        <circle cx="2.0" cy="0.85" r="0.09" fill="var(--color-accent)"></circle>
+        <circle cx="2.5" cy="0.8" r="0.14" fill="var(--color-accent)"></circle>
+        <path d="M 0.55 2.65 L 0.95 1.75" stroke="var(--color-accent)" stroke-width="0.04" marker-end="url(#g1)"></path>
+        <path d="M 1.05 1.7 L 1.45 1.15" stroke="var(--color-accent)" stroke-width="0.04" marker-end="url(#g1)"></path>
+        <path d="M 1.55 1.1 L 1.95 0.9" stroke="var(--color-accent)" stroke-width="0.04" marker-end="url(#g1)"></path>
+        <defs><marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--color-accent)"></path></marker></defs>
+        <text x="2.5" y="1.3" font-size="0.22" font-family="var(--font-heading)" fill="var(--color-accent-700)">minimum</text>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Backpropagation" data-speaker-notes="Backpropagation : c'est comment on calcule les gradients. On part de la loss en sortie, on remonte couche par couche en appliquant la chain rule. Efficace : un seul balayage suffit pour obtenir tous les gradients.">
+  <p class="slide-kicker">6.5 · Backpropagation</p>
+  <h2 class="slide-title">Backpropagation — l'erreur remonte</h2>
+  <div class="split-two rise">
+    <div class="copy">
+      <p style="font-size: 28px; line-height: 1.4;">Pour ajuster les poids, il faut savoir <strong>combien</strong> chaque poids contribue à l'erreur.</p>
+      <p style="font-size: 28px; line-height: 1.4; margin-top: 18px;">La backpropagation applique la règle de la chaîne pour distribuer l'erreur, de la sortie vers l'entrée. En un seul balayage arrière, on obtient <em>tous</em> les gradients.</p>
+      <p style="font-size: 24px; margin-top: 22px; color: color-mix(in srgb, var(--color-text) 65%, transparent); line-height: 1.4;">Redécouverte en 1986 par Rumelhart, Hinton et Williams — l'algorithme qui a débloqué le deep learning.</p>
+    </div>
+    <figure class="diagram" style="padding: 40px;">
+      <svg viewBox="0 0 500 350" style="width:100%; height:auto;">
+        <circle cx="60" cy="120" r="26" class="node"></circle>
+        <circle cx="60" cy="230" r="26" class="node"></circle>
+        <circle cx="220" cy="80" r="30" class="node-hidden"></circle>
+        <circle cx="220" cy="180" r="30" class="node-hidden"></circle>
+        <circle cx="220" cy="280" r="30" class="node-hidden"></circle>
+        <circle cx="380" cy="180" r="30" class="node-out"></circle>
+        <g stroke="var(--color-accent-2-600)" stroke-width="3" fill="none">
+          <line x1="86" y1="120" x2="190" y2="80"></line><line x1="86" y1="120" x2="190" y2="180"></line><line x1="86" y1="120" x2="190" y2="280"></line>
+          <line x1="86" y1="230" x2="190" y2="80"></line><line x1="86" y1="230" x2="190" y2="180"></line><line x1="86" y1="230" x2="190" y2="280"></line>
+          <line x1="250" y1="80" x2="350" y2="180"></line><line x1="250" y1="180" x2="350" y2="180"></line><line x1="250" y1="280" x2="350" y2="180"></line>
+        </g>
+        <text x="380" y="120" text-anchor="middle" font-family="var(--font-heading)" font-size="22" fill="var(--color-accent-700)">Loss</text>
+        <path d="M 440 320 L 40 320" stroke="var(--color-accent-2-700)" stroke-width="3" marker-end="url(#arrback)" fill="none"></path>
+        <text x="240" y="345" text-anchor="middle" font-size="20" fill="var(--color-accent-2-800)">sens de la backpropagation</text>
+        <defs><marker id="arrback" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--color-accent-2-700)"></path></marker></defs>
+      </svg>
+    </figure>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Optimizer" data-speaker-notes="L'optimizer est la stratégie de mise à jour. SGD est le plus simple ; Adam ajuste le pas selon l'historique des gradients. En pratique, Adam est le choix par défaut.">
+  <p class="slide-kicker">6.6 · Optimizer</p>
+  <h2 class="slide-title">L'optimizer — la stratégie de descente</h2>
+  <div class="cards rise">
+    <div class="card">
+      <h3>SGD</h3>
+      <p style="font-family: 'Cambria Math', Georgia, serif; font-size: 22px; margin: 8px 0;">w ← w − η · ∇L</p>
+      <p><strong>Stochastic Gradient Descent</strong> — le pas est un multiple constant du gradient. Simple, mais sensible au taux d'apprentissage.</p>
+    </div>
+    <div class="card sage">
+      <h3>Momentum</h3>
+      <p>Ajoute une <strong>inertie</strong> : le pas courant est influencé par les précédents. Traverse plus vite les zones plates.</p>
+    </div>
+    <div class="card clay">
+      <h3>Adam</h3>
+      <p><strong>Choix par défaut</strong>. Ajuste automatiquement un pas par paramètre, selon la moyenne et la variance des gradients passés. Robuste.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Mise à jour des paramètres" data-speaker-notes="Après backward, on applique la mise à jour à TOUS les paramètres, à toutes les couches. C'est la dernière étape de l'itération. Puis on recommence avec l'exemple ou le batch suivant.">
+  <p class="slide-kicker">6.7 · Mise à jour</p>
+  <h2 class="slide-title">Mise à jour — la boucle se referme</h2>
+  <div class="formula rise">
+    <span style="font-size: 34px; color: color-mix(in srgb, var(--color-text) 60%, transparent);">pour chaque paramètre θ du réseau :</span><br>
+    θ ← θ − <em>η</em> · <em>∂L/∂θ</em>
+    <span class="fnote">tous les poids et biais, dans toutes les couches, sont mis à jour <em>simultanément</em>.</span>
+  </div>
+  <ul class="bullets dashes rise" style="margin-top: calc(2 * var(--baseline)); font-size: 28px;">
+    <li>Un passage complet sur les données = <strong>une époque</strong> — le réseau en verra typiquement des dizaines.</li>
+    <li>La loss doit descendre au fil des époques. Sinon : ajuster η, revoir les données, changer d'architecture.</li>
+    <li>On surveille aussi la loss sur un jeu de <em>validation</em> — pour détecter le sur-apprentissage.</li>
+  </ul>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     PARTIE 7 — SYNTHÈSE
+     ============================================================ -->
+<section class="slide divider" data-label="Partie 7 — Synthèse" data-speaker-notes="Dernière partie : on récapitule et on prépare la transition vers le TP. Objectif : que chacun reparte avec une carte mentale claire.">
+  <div class="rise">
+    <p class="part">Partie 7 · 10 min</p>
+    <p class="ghost-num">07</p>
+    <h2 class="slide-title">Synthèse</h2>
+    <p class="agenda">Du neurone au MLP · La boucle d'apprentissage · À retenir · Transition TP</p>
+  </div>
+</section>
+
+<section class="slide content" data-label="Du neurone au MLP — récap" data-speaker-notes="Vue synthétique : du neurone isolé, on est passé au perceptron, puis au MLP. Chaque étape ajoute un ingrédient.">
+  <p class="slide-kicker">7.1 · Récapitulatif</p>
+  <h2 class="slide-title">Du neurone au MLP</h2>
+  <div class="steps rise" style="margin-top: calc(2.5 * var(--baseline));">
+    <div class="step"><div class="step-num">1</div><div><h4>Le neurone artificiel</h4><p>Somme pondérée des entrées + biais, passée dans une fonction d'activation.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><h4>Le perceptron</h4><p>Un neurone avec fonction seuil, entraîné à classer deux catégories linéairement séparables.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><h4>La couche</h4><p>Plusieurs neurones en parallèle, chacun apprenant une caractéristique différente.</p></div></div>
+    <div class="step active"><div class="step-num">4</div><div><h4>Le MLP</h4><p>Plusieurs couches empilées, avec une non-linéarité entre chaque, capable d'approcher toute fonction.</p></div></div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content" data-label="Concepts à retenir" data-speaker-notes="Si vous ne devez retenir que quatre choses de la matinée : ceci. Rangé par ordre d'importance conceptuelle.">
+  <p class="slide-kicker">7.2 · À retenir</p>
+  <h2 class="slide-title">Les quatre idées à emporter</h2>
+  <div class="cards four rise">
+    <div class="card">
+      <span class="card-num">1</span>
+      <h3>Apprendre = ajuster des paramètres</h3>
+      <p>Tout se joue dans les poids et les biais. Rien d'autre ne change pendant l'entraînement.</p>
+    </div>
+    <div class="card sage">
+      <span class="card-num">2</span>
+      <h3>La loss guide tout</h3>
+      <p>Un seul nombre — l'erreur — dirige toute la mise à jour du réseau, quelle que soit sa taille.</p>
+    </div>
+    <div class="card">
+      <span class="card-num">3</span>
+      <h3>La non-linéarité fait la puissance</h3>
+      <p>Sans activation non linéaire, la profondeur n'apporte rien. C'est elle qui fait le deep learning.</p>
+    </div>
+    <div class="card clay">
+      <span class="card-num">4</span>
+      <h3>Le gradient dit où aller</h3>
+      <p>La backpropagation calcule le gradient de la loss par rapport à chaque paramètre — le reste est arithmétique.</p>
+    </div>
+  </div>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide content centered" data-label="Transition TP" data-speaker-notes="Transition vers l'après-midi. On va coder ensemble un MLP simple sur un dataset jouet, puis MNIST. Vous aurez tous les blocs en main.">
+  <p class="slide-kicker">7.3 · La suite</p>
+  <h2 class="slide-title">Cet après-midi — travaux pratiques</h2>
+  <div class="callout rise" style="max-width: 1400px; text-align: center;">
+    <span class="callout-kicker" style="display:block;">Programme du TP</span>
+    <div style="font-family: var(--font-heading); font-size: 40px; line-height: 1.35; color: var(--color-text); margin-top: 8px;">Coder un perceptron « à la main » ·<br>Entraîner un MLP sur MNIST avec PyTorch ·<br>Explorer l'effet du taux d'apprentissage.</div>
+  </div>
+  <p style="margin-top: calc(2 * var(--baseline)); font-size: 26px; max-width: 60ch; text-align: center; color: color-mix(in srgb, var(--color-text) 70%, transparent); line-height: 1.4;">Objectif : lier chaque ligne de code à un concept vu ce matin.</p>
+  <div class="page-foot" aria-hidden="true"></div>
+</section>
+
+<section class="slide cover" data-label="Merci" data-speaker-notes="Merci — questions ? Puis pause déjeuner, on reprend à 14h en salle machines.">
+  <div class="rise">
+    <p class="eyebrow">Fin de la matinée</p>
+    <h2 class="display">Merci</h2>
+    <p class="cover-sub text-muted">Questions ouvertes avant la pause — puis TP à 14 h en salle machines.</p>
+  </div>
+  <div class="pin-bottom meta"><span>Formation Deep Learning</span><span>·</span><span>Perceptron &amp; MLP</span></div>
+</section>
+
+</x-import>
+</x-dc>
+</body>
+</html>
